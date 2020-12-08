@@ -3,6 +3,7 @@ import requests
 import CDCWonderResponse
 from utils import dictToXML
 from CDCWonderEnums import *
+from CDCWonderExceptions import *
 
 
 class CDCWonderRequest():
@@ -147,8 +148,11 @@ class CDCWonderRequest():
         and sends a POST request to the CDC Wonder API.
         """
 
+        if not self.datause_restrictions_accepted:
+            raise DatauseAgreementException()
+
         self.request_xml = "<request-parameters>\n"
-        self.request_xml += dictToXML({"accept_datause_restrictions": "true"}) # Wouldn't be able to get here if they hadn't accepted
+        self.request_xml += dictToXML({"accept_datause_restrictions": "true"})
         self.request_xml += dictToXML(self.b_parameters)
         self.request_xml += dictToXML(self.m_parameters)
         self.request_xml += dictToXML(self.f_parameters)
@@ -260,8 +264,5 @@ if __name__ == '__main__':
 
     # Example of setter
     req.set_hispanic_origin(HispanicOrigin.HispanicOrLatino, HispanicOrigin.NotHispanicOrLatino)
-
-    # Request is the builder (mutable), send actually returns an immutable response object.
-    # TODO: Do we need to differentiate between a RequestBuilder and a Request or is this ok?
 
     req.send()
