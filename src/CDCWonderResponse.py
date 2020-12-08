@@ -1,5 +1,5 @@
 import typing
 
-class CDCWonderResponse(Object):
+class CDCWonderResponse():
     def __init__(self):
         pass
