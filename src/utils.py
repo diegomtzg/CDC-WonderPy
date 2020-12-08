@@ -10,7 +10,7 @@ def dictToXML(parameterDict):
         parameterString += "<name>" + key + "</name>\n"
 
         # If value is a list, concatenate all values
-        if isinstance(parameterDict[key], list):
+        if isinstance(parameterDict[key], list) or isinstance(parameterDict[key], tuple):
             for value in parameterDict[key]:
                 parameterString += "<value>" + value + "</value>\n"
         else:

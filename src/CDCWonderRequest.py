@@ -1,9 +1,9 @@
-import typing
 import requests
 
 import CDCWonderResponse
 from utils import dictToXML
-from enums import XYZEnum
+from CDCWonderEnums import *
+
 
 class CDCWonderRequest():
     """
@@ -13,51 +13,15 @@ class CDCWonderRequest():
         ¿ Or a getter for entire internal state ?
     """
 
-    def __init__(self, accept_datause_restrictions=False):
+    def __init__(self):
         """
-        """
-
-        if not accept_datause_restrictions:
-            # TODO: Create custom exceptions for known errors like these.
-            raise Exception("All access to data and statistics on CDC WONDER, "
-                            "or subsequent re-use of that information, is subject to CDC's "
-                            "data use restrictions policy. Please accept data use restrictions "
-                            "to access the API.")
-
-        # Initialize state with default parameter values.
-        self.initDefaultParameters()
-
-
-
-    def send(self) -> "CDCWonderResponse":
-        """
-        """
-
-        # Build XML with parameter values from internal state.
-        self.request_xml = "<request-parameters>\n"
-        self.request_xml += dictToXML({"accept_datause_restrictions": "true"}) # Wouldn't be able to get here if they hadn't accepted
-        self.request_xml += dictToXML(self.b_parameters)
-        self.request_xml += dictToXML(self.m_parameters)
-        self.request_xml += dictToXML(self.f_parameters)
-        self.request_xml += dictToXML(self.i_parameters)
-        self.request_xml += dictToXML(self.v_parameters)
-        self.request_xml += dictToXML(self.o_parameters)
-        self.request_xml += dictToXML(self.vm_parameters)
-        self.request_xml += dictToXML(self.misc_parameters)
-        self.request_xml += "</request-parameters>"
-
-        url = "https://wonder.cdc.gov/controller/datarequest/D76"
-        response = requests.post(url, data={"request_xml": self.request_xml})
-        print(response.status_code) # TODO: Error handling
-        print(response.text) # TODO: Response parsing
-
-
-    def initDefaultParameters(self):
-        """
-        Initializes state to default parameter values.
+        Initializes the internal state of this request builder with the
+        default parameter values so that users can easily get the most general
+        version of the data.
 
         Best parameter reference: https://github.com/alipphardt/cdc-wonder-api/blob/master/README.md
         """
+        self.datause_restrictions_accepted = False
 
         # Group-by parameters.
         self.b_parameters = {
@@ -79,7 +43,7 @@ class CDCWonderRequest():
         # Values highlighted in a "Finder" control for hierarchical lists, such as the "Regions/Divisions/States/Counties hierarchical" list.
         # Format for F parameters: <year1> <year2> or <year1>/<month1> <year2>/<month2>
         self.f_parameters = {
-            "F_D76.V1": ["*All*"],  # year/month # TODO: Why is this 1999 in the default example
+            "F_D76.V1": ["*All*"],  # year/month
             "F_D76.V10": ["*All*"],  # Census Regions - dont change
             "F_D76.V2": ["*All*"],  # ICD-10 Codes
             "F_D76.V27": ["*All*"],  # HHS Regions - dont change
@@ -89,12 +53,12 @@ class CDCWonderRequest():
         # Contents of the "Currently selected" information areas next to "Finder" controls in the "Request Form."
         # Format for I parameters: <year> (<year>) or <year1>/<month1> (<month1 abbrev>., <year 1>) <year2>/<month2> (<month2 abbrev>., <year 2>)
         self.i_parameters = {
-            "I_D76.V1": "*All* (All Dates)",  # year/month # TODO: Why is this 1999 in default example
+            "I_D76.V1": "*All* (All Dates)",  # year/month
             "I_D76.V10": "*All* (The United States)",  # Census Regions - dont change
             "I_D76.V2": "*All* (All Causes of Death)",  # Causes of Death
             "I_D76.V27": "*All* (The United States)",  # HHS Regions - dont change
             "I_D76.V9": "*All* (The United States)",  # State County - dont change
-            "I_D76.V25": "All Causes of Death"  # TODO: This wasn't a parameter in jupyter notebook
+            "I_D76.V25": "All Causes of Death"
         }
 
         # Variable values to limit in the "where" clause of the query, found in multiple select list boxes and advanced finder text boxes.
@@ -118,7 +82,7 @@ class CDCWonderRequest():
             "V_D76.V22": "*All*",  # Injury Intent
             "V_D76.V23": "*All*",  # Injury Mechanism and All Other Leading Causes
             "V_D76.V24": "*All*",  # Weekday
-            "V_D76.V25": "",  # Drug/Alcohol Induced Causes # TODO: Non-empty in jupyter notebook
+            "V_D76.V25": "",  # Drug/Alcohol Induced Causes
             "V_D76.V27": "",  # HHS Regions
             "V_D76.V51": "*All*",  # Five-Year Age Groups
             "V_D76.V52": "*All*"  # Single-Year Ages
@@ -135,14 +99,14 @@ class CDCWonderRequest():
             "O_aar": "aar_none",  # age-adjusted rates
             "O_aar_pop": "0000",  # population selection for age-adjusted rates
             "O_age": "D76.V5",  # 10-year age groups (could be ten-year, five-year, single-year, infant groups)
-            "O_javascript": "on",  # Set to on by default # TODO: off since not in browser?
+            "O_javascript": "on",  # Set to on by default # TODO: Off since not in browser?
             "O_location": "D76.V9",  # select location variable to use (states here, but could be census or hhs regions)
             "O_precision": "9",  # decimal places (max)
             "O_rate_per": "100000",  # rates calculated per X persons
             "O_show_totals": "true",  # Show totals
             "O_show_zeros": "true",  # Show zero values
             "O_timeout": "600",  # TODO: Do we care about data access timeout?
-            "O_title": "",  # TODO: title for data run
+            "O_title": "",  # TODO: Do we want to set this title?
             "O_ucd": "D76.V2",  # select underlying cause of death category (ICD-10 by default)
             "O_urban": "D76.V19"  # select urbanization category (2013 by default)
         }
@@ -166,6 +130,39 @@ class CDCWonderRequest():
             "stage": "request"
         }
 
+
+    def accept_datause_restrictions(self):
+        """
+        Users of the API must explicitly call this method to agree to abide by the CDC's data use restrictions
+        in order to use the API.
+        # TODO: Could accept boolean as a parameter but the function name is enough to make this nice and readable in sample code
+        """
+        self.datause_restrictions_accepted = True
+        return self
+
+
+    def send(self) -> "CDCWonderResponse":
+        """
+        Builds an XML parameter document with the parameter values from the current internal state
+        and sends a POST request to the CDC Wonder API.
+        """
+
+        self.request_xml = "<request-parameters>\n"
+        self.request_xml += dictToXML({"accept_datause_restrictions": "true"}) # Wouldn't be able to get here if they hadn't accepted
+        self.request_xml += dictToXML(self.b_parameters)
+        self.request_xml += dictToXML(self.m_parameters)
+        self.request_xml += dictToXML(self.f_parameters)
+        self.request_xml += dictToXML(self.i_parameters)
+        self.request_xml += dictToXML(self.v_parameters)
+        self.request_xml += dictToXML(self.o_parameters)
+        self.request_xml += dictToXML(self.vm_parameters)
+        self.request_xml += dictToXML(self.misc_parameters)
+        self.request_xml += "</request-parameters>"
+
+        url = "https://wonder.cdc.gov/controller/datarequest/D76"
+        response = requests.post(url, data={"request_xml": self.request_xml})
+        print(response.status_code) # TODO: Error handling
+        print(response.text) # TODO: Response parsing
 
 
 
@@ -217,7 +214,8 @@ class CDCWonderRequest():
     def set_hispanic_origin(self, *args):
         """
         """
-        raise NotImplementedError
+        # TODO: Exception -- The 'Not Stated' Hispanic Origin value cannot be combined with other values.]
+        self.v_parameters['V_D76.V17'] = [arg.value for arg in args]
 
 
     #########################################
@@ -255,14 +253,15 @@ class CDCWonderRequest():
         raise NotImplementedError
 
 
-
-
-
+# Sample code
 if __name__ == '__main__':
-    # Sample Code
-    req = CDCWonderRequest(accept_datause_restrictions=True)
-    
-    try:
-        req.send()
-    except Exception as e:
-        print(e)
+    req = CDCWonderRequest()
+    req.accept_datause_restrictions()
+
+    # Example of setter
+    req.set_hispanic_origin(HispanicOrigin.HispanicOrLatino, HispanicOrigin.NotHispanicOrLatino)
+
+    # Request is the builder (mutable), send actually returns an immutable response object.
+    # TODO: Do we need to differentiate between a RequestBuilder and a Request or is this ok?
+
+    req.send()
