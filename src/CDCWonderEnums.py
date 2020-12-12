@@ -32,3 +32,9 @@ class PlaceOfDeath(Enum):
     Other = "7"
     Unknown = "9"
 
+class Autopsy(Enum):
+    All = "*All*"
+    No = "N"
+    Yes = "Y"
+    Unknown = "U"
+

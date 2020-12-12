@@ -4,6 +4,7 @@ import CDCWonderResponse
 from utils import dictToXML
 from CDCWonderEnums import *
 from CDCWonderExceptions import *
+from CDCWonderExceptionsPrivate import *
 
 
 class CDCWonderRequest():
@@ -207,24 +208,75 @@ class CDCWonderRequest():
 
     def set_gender(self, gender):
         """
-        Specify which Gender to filter by. Default is *All*.
-        //TODO mention TypeError if gender is not of type CDCWonderEnums.Gender?
+        Specify which Gender option to filter by. Default is *All*.
+
+        @param self: is the instance this function is being called on.
+        @param gender: the gender option that the user wants to filter by
+
+        returns: self
+
+        Exceptions raised:
+            TypeError if argument "gender" provided isn't of type Gender
         """
-        raise NotImplementedError
+        if (type(gender) != Gender):
+            raise TypeError
+        # v or vm params?
+        self.v_parameters["V_D76.V7"] = gender.value
+        return self
 
     def set_race(self, *args):
         """
-        Specify the Races to filter by. Default is *All*.
-        //TODO InvalidArgumentException thrown if 
+        Specify the Race options to filter by. Default is *All*.
+
+        @param self: is the instance this function is being called on.
+        @param args: the race options that the user wants to filter by
+
+        returns: self
+
+        Exceptions raised:
+            ValueError if atleast one race isn't provided or if Race.All 
+                        is provided with other Race options
+            TypeError if arguments provided aren't of type Race
         """
-        raise NotImplementedError
+        if (len(args) == 0):
+            raise ValueError("Function expects atleast one Race")
+        races = set()
+        for arg in args:
+            if (type(arg) != Race):
+                raise TypeError("Provided arguments aren't of race enum type. Please provide arguments of the right type. For reference, check CDCWodnerEnums.py")
+            races.add(arg)
+        if (len(races) > 1 and Race.All in races):
+            raise ValueError(race_exception)
+        self.v_parameters["V_D76.V8"] = list(races)
+        return self
 
     def set_hispanic_origin(self, *args):
         """
-        """
-        # TODO: Exception -- The 'Not Stated' Hispanic Origin value cannot be combined with other values.]
-        self.v_parameters['V_D76.V17'] = [arg.value for arg in args]
+        Specify the Hispanic origin options to filter by. Default is *All*.
 
+        @param self: is the instance this function is being called on.
+        @param args: the HispanicOrigin options that the user wants to filter by
+
+        returns: self
+
+        Exceptions raised:
+            ValueError if atleast one HispanicOrigin isn't provided, or if HispanicOrigin.All 
+                        is provided with other HispanicOrigin options
+            TypeError if arguments provided aren't of type Race
+        """
+        if (len(args) == 0):
+            raise ValueError("Function expects atleast one HispanicOrigin")
+        hispanic_origins = set()
+        for arg in args:
+            if (type(arg) != HispanicOrigin):
+                raise TypeError("Provided arguments aren't of race enum type. Please provide arguments of the right type. For reference, check CDCWodnerEnums.py")
+            hispanic_origins.add(arg)
+        if (len(hispanic_origins) > 1 and HispanicOrigin.All in hispanic_origins):
+            raise ValueError(hispanic_origin_all_exception)
+        if (len(hispanic_origins) > 1 and HispanicOrigin.NotStated in hispanic_origins):
+            raise ValueError(hispanic_origin_ns_exception)        
+        self.v_parameters["V_D76.V17"] = list(hispanic_origins)
+        return self
 
     #########################################
     #### Chronology
@@ -247,13 +299,56 @@ class CDCWonderRequest():
 
     def set_place_of_death(self, *args):
         """
+        Specify the Place of Death options to filter by. Default is *All*.
+
+        @param self: is the instance this function is being called on.
+        @param args: the PlaceOfDeath options that the user wants to filter by
+
+        returns: self
+
+        Exceptions raised:
+            ValueError if atleast one PlaceOfDeath option isn't provided, or if PlaceOfDeath.All 
+                        is provided with other PlaceOfDeath options
+            TypeError if arguments provided aren't of type PlaceOfDeath
         """
-        raise NotImplementedError
+        if (len(args) == 0):
+            raise ValueError("Function expects atleast one Place Of Death")
+        place_of_death_options = set()
+        for arg in args:
+            if (type(arg) != Autopsy):
+                raise TypeError("Provided arguments aren't of race enum type. Please provide arguments of the right type. For reference, check CDCWodnerEnums.py")
+            place_of_death_options.add(arg)
+        if (len(place_of_death_options) > 1 and PlaceOfDeath.All in place_of_death_options):
+            raise ValueError(place_of_death_exception)
+        self.v_parameters["V_D76.V21"] = list(place_of_death_options)
+        return self
+
 
     def set_autopsy(self, *args):
         """
+        Specify the Autopsy options to filter by. Default is *All*.
+
+        @param self: is the instance this function is being called on.
+        @param args: the Autopsy options that the user wants to filter by
+
+        returns: self
+
+        Exceptions raised:
+            ValueError if atleast one Autopsy option isn't provided, or if Autopsy.All 
+                        is provided with other Autopsy options
+            TypeError if arguments provided aren't of type Autopsy
         """
-        raise NotImplementedError
+        if (len(args) == 0):
+            raise ValueError("Function expects atleast one Race")
+        autopsy_options = set()
+        for arg in args:
+            if (type(arg) != Autopsy):
+                raise TypeError("Provided arguments aren't of race enum type. Please provide arguments of the right type. For reference, check CDCWodnerEnums.py")
+            autopsy_options.add(arg)
+        if (len(autopsy_options) > 1 and Autopsy.All in autopsy_options):
+            raise ValueError(autopsy_exception)
+        self.v_parameters["V_D76.V20"] = list(autopsy_options)
+        return self
 
     def set_cause_of_death(self, *args):
         """
