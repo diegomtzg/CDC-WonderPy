@@ -243,7 +243,7 @@ class CDCWonderRequest():
         races = set()
         for arg in args:
             if (type(arg) != Race):
-                raise TypeError("Provided arguments aren't of race enum type. Please provide arguments of the right type. For reference, check CDCWodnerEnums.py")
+                raise TypeError("Provided arguments aren't of race enum type. Please provide arguments of the right type. For reference, check CDCWonderEnums.py")
             races.add(arg)
         if (len(races) > 1 and Race.All in races):
             raise ValueError(race_exception)
@@ -269,7 +269,7 @@ class CDCWonderRequest():
         hispanic_origins = set()
         for arg in args:
             if (type(arg) != HispanicOrigin):
-                raise TypeError("Provided arguments aren't of race enum type. Please provide arguments of the right type. For reference, check CDCWodnerEnums.py")
+                raise TypeError("Provided arguments aren't of Hispanic Origin enum type. Please provide arguments of the right type. For reference, check CDCWonderEnums.py")
             hispanic_origins.add(arg)
         if (len(hispanic_origins) > 1 and HispanicOrigin.All in hispanic_origins):
             raise ValueError(hispanic_origin_all_exception)
@@ -289,9 +289,29 @@ class CDCWonderRequest():
 
     def set_weekday(self, *args):
         """
-        """
-        raise NotImplementedError
+        Specify weekday options to filter by. Default is *All*.
 
+        @param self: is the instance this function is being called on.
+        @param args: the Weekday options that the user wants to filter by
+
+        returns: self
+
+        Exceptions raised:
+            ValueError if atleast one Weekday option isn't provided, or if Weekday.All 
+                        is provided with other Weekday options
+            TypeError if arguments provided aren't of type Weekday
+        """
+        if (len(args) == 0):
+            raise ValueError("Function expects atleast one Weekday")
+        weekdays = set()
+        for arg in args:
+            if (type(arg) != Weekday):
+                raise TypeError("Provided arguments aren't of Weekday enum type. Please provide arguments of the right type. For reference, check CDCWonderEnums.py")
+            weekdays.add(arg)
+        if (len(weekdays) > 1 and Weekday.All in weekdays):
+            raise ValueError(weekday_exception)
+        self.v_parameters["V_D76.V24"] = list(weekdays)
+        return self
 
     #########################################
     #### Miscellaneous
@@ -316,7 +336,7 @@ class CDCWonderRequest():
         place_of_death_options = set()
         for arg in args:
             if (type(arg) != Autopsy):
-                raise TypeError("Provided arguments aren't of race enum type. Please provide arguments of the right type. For reference, check CDCWodnerEnums.py")
+                raise TypeError("Provided arguments aren't of PlaceOfDeath enum type. Please provide arguments of the right type. For reference, check CDCWonderEnums.py")
             place_of_death_options.add(arg)
         if (len(place_of_death_options) > 1 and PlaceOfDeath.All in place_of_death_options):
             raise ValueError(place_of_death_exception)
@@ -343,7 +363,7 @@ class CDCWonderRequest():
         autopsy_options = set()
         for arg in args:
             if (type(arg) != Autopsy):
-                raise TypeError("Provided arguments aren't of race enum type. Please provide arguments of the right type. For reference, check CDCWodnerEnums.py")
+                raise TypeError("Provided arguments aren't of Autopsy enum type. Please provide arguments of the right type. For reference, check CDCWonderEnums.py")
             autopsy_options.add(arg)
         if (len(autopsy_options) > 1 and Autopsy.All in autopsy_options):
             raise ValueError(autopsy_exception)

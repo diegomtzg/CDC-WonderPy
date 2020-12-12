@@ -19,6 +19,18 @@ class Race(Enum):
     AfricanAmerican = "2054-5"
     White = "2106-3"
 
+#Chronology enums
+
+class Weekday(Enum):
+    All = "*All*"
+    Sun = "1"
+    Mon = "2"
+    Tue = "3"
+    Wed = "4"
+    Thu = "5"
+    Fri = "6"
+    Sat = "7"
+    Unknown = "9"
 #Miscellaneous data enums
 class PlaceOfDeath(Enum):
     All = "*All*"
