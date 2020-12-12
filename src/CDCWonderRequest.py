@@ -197,7 +197,7 @@ class CDCWonderRequest():
 
 
     #########################################
-    #### Democraphic
+    #### Demographic
     #########################################
 
     def set_age_groups(self, *args):
@@ -205,13 +205,17 @@ class CDCWonderRequest():
         """
         raise NotImplementedError
 
-    def set_gender(self, *args):
+    def set_gender(self, gender):
         """
+        Specify which Gender to filter by. Default is *All*.
+        //TODO mention TypeError if gender is not of type CDCWonderEnums.Gender?
         """
         raise NotImplementedError
 
     def set_race(self, *args):
         """
+        Specify the Races to filter by. Default is *All*.
+        //TODO InvalidArgumentException thrown if 
         """
         raise NotImplementedError
 

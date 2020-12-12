@@ -1,5 +1,5 @@
 
-class DatauseAgreementException(Exception):
+class DataUseAgreementException(Exception):
     def __init__(self):
         super().__init__("All access to data and statistics on CDC WONDER, "
                          "or subsequent re-use of that information, is subject "
