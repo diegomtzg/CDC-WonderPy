@@ -6,3 +6,9 @@ To launch the base API's example Jupyter Notebook, run the following command at 
 ```
 jupyter-notebook resources/CDC-WONDER-Example.ipynb
 ```
+
+### Running Locally
+To install dependencies, run the following command at `src` root:
+```
+pip install -r requirements.txt
+```

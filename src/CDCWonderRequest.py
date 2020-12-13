@@ -15,7 +15,7 @@ class CDCWonderRequest():
         ¿ Or a getter for entire internal state ?
     """
 
-    def __init__(self):
+    def __init__(self, debug_mode=False):
         """
         Initializes the internal state of this request builder with the
         default parameter values so that users can easily get the most general
@@ -23,10 +23,11 @@ class CDCWonderRequest():
 
         Best parameter reference: https://github.com/alipphardt/cdc-wonder-api/blob/master/README.md
         """
-        self.datause_restrictions_accepted = False
+        self._DEBUG = debug_mode
+        self._datause_restrictions_accepted = False
 
         # Group-by parameters.
-        self.b_parameters = {
+        self._b_parameters = {
             "B_1": "D76.V1-level1",  # year
             "B_2": "*None*",
             "B_3": "*None*",
@@ -35,7 +36,7 @@ class CDCWonderRequest():
         }
 
         # Measures to return. Deaths, Population and Crude Rate are included by default (but must still be included).
-        self.m_parameters = {
+        self._m_parameters = {
             "M_1": "D76.M1",  # Deaths, must be included
             "M_2": "D76.M2",  # Population, must be included
             "M_3": "D76.M3",  # Crude rate, must be included
@@ -44,7 +45,7 @@ class CDCWonderRequest():
 
         # Values highlighted in a "Finder" control for hierarchical lists, such as the "Regions/Divisions/States/Counties hierarchical" list.
         # Format for F parameters: <year1> <year2> or <year1>/<month1> <year2>/<month2>
-        self.f_parameters = {
+        self._f_parameters = {
             "F_D76.V1": ["*All*"],  # year/month
             "F_D76.V10": ["*All*"],  # Census Regions - dont change
             "F_D76.V2": ["*All*"],  # ICD-10 Codes
@@ -54,7 +55,7 @@ class CDCWonderRequest():
 
         # Contents of the "Currently selected" information areas next to "Finder" controls in the "Request Form."
         # Format for I parameters: <year> (<year>) or <year1>/<month1> (<month1 abbrev>., <year 1>) <year2>/<month2> (<month2 abbrev>., <year 2>)
-        self.i_parameters = {
+        self._i_parameters = {
             "I_D76.V1": "*All* (All Dates)",  # year/month
             "I_D76.V10": "*All* (The United States)",  # Census Regions - dont change
             "I_D76.V2": "*All* (All Causes of Death)",  # Causes of Death
@@ -65,7 +66,7 @@ class CDCWonderRequest():
 
         # Variable values to limit in the "where" clause of the query, found in multiple select list boxes and advanced finder text boxes.
         # Format for V parameters: <year> (<year>) or <year1>/<month1> (<month1 abbrev>., <year 1>) <year2>/<month2> (<month2 abbrev>., <year 2>)
-        self.v_parameters = {
+        self._v_parameters = {
             "V_D76.V1": "",  # Year/Month
             "V_D76.V2": "",  # ICD-10 Codes
             "V_D76.V4": "*All*",  # ICD-10 113 Cause List
@@ -91,7 +92,7 @@ class CDCWonderRequest():
         }
 
         # Other parameters, such as radio buttons, checkboxes, and lists that are not data categories
-        self.o_parameters = {
+        self._o_parameters = {
             # Fmode controls whether the parameters pull from regular (F) or advanced finder (V_) parameters.
             "O_V1_fmode": "freg",  # Use regular finder and ignore v parameter value
             "O_V2_fmode": "freg",  # Use regular finder and ignore v parameter value
@@ -114,7 +115,7 @@ class CDCWonderRequest():
         }
 
         # Values for non-standard age adjusted rates (ignored if standard age adjusted rates are used)
-        self.vm_parameters = {
+        self._vm_parameters = {
             "VM_D76.M6_D76.V1_S": "*All*",  # Year
             "VM_D76.M6_D76.V7": "*All*",  # Gender
             "VM_D76.M6_D76.V8": "*All*",  # Race
@@ -123,7 +124,7 @@ class CDCWonderRequest():
         }
 
         # Miscellaneous hidden inputs/parameters usually passed by web form. These do not change.
-        self.misc_parameters = {
+        self._misc_parameters = {
             "action-Send": "Send",
             "finder-stage-D76.V1": "codeset",
             "finder-stage-D76.V2": "codeset",
@@ -139,7 +140,7 @@ class CDCWonderRequest():
         in order to use the API.
         # TODO: Could accept boolean as a parameter but the function name is enough to make this nice and readable in sample code
         """
-        self.datause_restrictions_accepted = True
+        self._datause_restrictions_accepted = True
         return self
 
 
@@ -149,23 +150,23 @@ class CDCWonderRequest():
         and sends a POST request to the CDC Wonder API.
         """
 
-        if not self.datause_restrictions_accepted:
+        if not self._datause_restrictions_accepted:
             raise DatauseAgreementException()
 
-        self.request_xml = "<request-parameters>\n"
-        self.request_xml += dictToXML({"accept_datause_restrictions": "true"})
-        self.request_xml += dictToXML(self.b_parameters)
-        self.request_xml += dictToXML(self.m_parameters)
-        self.request_xml += dictToXML(self.f_parameters)
-        self.request_xml += dictToXML(self.i_parameters)
-        self.request_xml += dictToXML(self.v_parameters)
-        self.request_xml += dictToXML(self.o_parameters)
-        self.request_xml += dictToXML(self.vm_parameters)
-        self.request_xml += dictToXML(self.misc_parameters)
-        self.request_xml += "</request-parameters>"
+        request_xml = "<request-parameters>\n"
+        request_xml += dictToXML({"accept_datause_restrictions": "true"})
+        request_xml += dictToXML(self._b_parameters)
+        request_xml += dictToXML(self._m_parameters)
+        request_xml += dictToXML(self._f_parameters)
+        request_xml += dictToXML(self._i_parameters)
+        request_xml += dictToXML(self._v_parameters)
+        request_xml += dictToXML(self._o_parameters)
+        request_xml += dictToXML(self._vm_parameters)
+        request_xml += dictToXML(self._misc_parameters)
+        request_xml += "</request-parameters>"
 
         url = "https://wonder.cdc.gov/controller/datarequest/D76"
-        response = requests.post(url, data={"request_xml": self.request_xml})
+        response = requests.post(url, data={"request_xml": request_xml})
         print(response.status_code) # TODO: Error handling
         print(response.text) # TODO: Response parsing
 
@@ -221,7 +222,7 @@ class CDCWonderRequest():
         if (type(gender) != Gender):
             raise TypeError
         # v or vm params?
-        self.v_parameters["V_D76.V7"] = gender.value
+        self._v_parameters["V_D76.V7"] = gender.value
         return self
 
     def set_race(self, *args):
@@ -247,7 +248,7 @@ class CDCWonderRequest():
             races.add(arg)
         if (len(races) > 1 and Race.All in races):
             raise ValueError(race_exception)
-        self.v_parameters["V_D76.V8"] = list(races)
+        self._v_parameters["V_D76.V8"] = list(races)
         return self
 
     def set_hispanic_origin(self, *args):
@@ -275,7 +276,7 @@ class CDCWonderRequest():
             raise ValueError(hispanic_origin_all_exception)
         if (len(hispanic_origins) > 1 and HispanicOrigin.NotStated in hispanic_origins):
             raise ValueError(hispanic_origin_ns_exception)        
-        self.v_parameters["V_D76.V17"] = list(hispanic_origins)
+        self._v_parameters["V_D76.V17"] = list(hispanic_origins)
         return self
 
     #########################################
@@ -310,7 +311,7 @@ class CDCWonderRequest():
             weekdays.add(arg)
         if (len(weekdays) > 1 and Weekday.All in weekdays):
             raise ValueError(weekday_exception)
-        self.v_parameters["V_D76.V24"] = list(weekdays)
+        self._v_parameters["V_D76.V24"] = list(weekdays)
         return self
 
     #########################################
@@ -340,7 +341,7 @@ class CDCWonderRequest():
             place_of_death_options.add(arg)
         if (len(place_of_death_options) > 1 and PlaceOfDeath.All in place_of_death_options):
             raise ValueError(place_of_death_exception)
-        self.v_parameters["V_D76.V21"] = list(place_of_death_options)
+        self._v_parameters["V_D76.V21"] = list(place_of_death_options)
         return self
 
 
@@ -367,7 +368,7 @@ class CDCWonderRequest():
             autopsy_options.add(arg)
         if (len(autopsy_options) > 1 and Autopsy.All in autopsy_options):
             raise ValueError(autopsy_exception)
-        self.v_parameters["V_D76.V20"] = list(autopsy_options)
+        self._v_parameters["V_D76.V20"] = list(autopsy_options)
         return self
 
     def set_cause_of_death(self, *args):
