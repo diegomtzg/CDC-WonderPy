@@ -167,7 +167,7 @@ class CDCWonderRequest():
 
         url = "https://wonder.cdc.gov/controller/datarequest/D76"
         response = requests.post(url, data={"request_xml": request_xml})
-        print(response.status_code) # TODO: Error handling    
+        print("This is the status code: " + str(response.status_code)) # TODO: Error handling    
         return CDCWonderResponse(response.text)
 
 
