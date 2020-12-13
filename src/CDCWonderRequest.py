@@ -24,7 +24,7 @@ class CDCWonderRequest():
         Best parameter reference: https://github.com/alipphardt/cdc-wonder-api/blob/master/README.md
         """
         self._DEBUG = debug_mode
-        self._datause_restrictions_accepted = False
+        self._datause_restrictions_accepted = True
 
         # Group-by parameters.
         self._b_parameters = {
@@ -132,16 +132,6 @@ class CDCWonderRequest():
             "finder-stage-D76.V9": "codeset",
             "stage": "request"
         }
-
-
-    def accept_datause_restrictions(self):
-        """
-        Users of the API must explicitly call this method to agree to abide by the CDC's data use restrictions
-        in order to use the API.
-        # TODO: Could accept boolean as a parameter but the function name is enough to make this nice and readable in sample code
-        """
-        self._datause_restrictions_accepted = True
-        return self
 
 
     def send(self) -> "CDCWonderResponse":
@@ -335,7 +325,7 @@ class CDCWonderRequest():
             raise ValueError("Function expects atleast one Place Of Death")
         place_of_death_options = set()
         for arg in args:
-            if (type(arg) != Autopsy):
+            if (type(arg) != PlaceOfDeath):
                 raise TypeError("Provided arguments aren't of PlaceOfDeath enum type. Please provide arguments of the right type. For reference, check CDCWonderEnums.py")
             place_of_death_options.add(arg.value)
         if (len(place_of_death_options) > 1 and PlaceOfDeath.All in place_of_death_options):
@@ -379,10 +369,12 @@ class CDCWonderRequest():
 # Sample code
 if __name__ == '__main__':
     req = CDCWonderRequest()
-    req.accept_datause_restrictions()
 
     # Example of setter
     req.set_hispanic_origin(HispanicOrigin.HispanicOrLatino, HispanicOrigin.NotHispanicOrLatino)
-
+    req.set_gender(Gender.Female).set_race(Race.Asian)
+    # req.set_weekday(Weekday.Sun).set_autopsy(Autopsy.Yes)
+    # req.set_place_of_death(PlaceOfDeath.DecedentHome)
     response = req.send()
+    #TODO - document 
     print(response.as_dataframe())
