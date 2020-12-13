@@ -1,6 +1,6 @@
 import requests
 
-import CDCWonderResponse
+from CDCWonderResponse import CDCWonderResponse
 from utils import dictToXML
 from CDCWonderEnums import *
 from CDCWonderExceptions import *
@@ -167,9 +167,8 @@ class CDCWonderRequest():
 
         url = "https://wonder.cdc.gov/controller/datarequest/D76"
         response = requests.post(url, data={"request_xml": request_xml})
-        print(response.status_code) # TODO: Error handling
-        print(response.text) # TODO: Response parsing
-
+        print(response.status_code) # TODO: Error handling    
+        return CDCWonderResponse(response.text)
 
 
     #########################################
@@ -245,7 +244,7 @@ class CDCWonderRequest():
         for arg in args:
             if (type(arg) != Race):
                 raise TypeError("Provided arguments aren't of race enum type. Please provide arguments of the right type. For reference, check CDCWonderEnums.py")
-            races.add(arg)
+            races.add(arg.value)
         if (len(races) > 1 and Race.All in races):
             raise ValueError(race_exception)
         self._v_parameters["V_D76.V8"] = list(races)
@@ -271,7 +270,7 @@ class CDCWonderRequest():
         for arg in args:
             if (type(arg) != HispanicOrigin):
                 raise TypeError("Provided arguments aren't of Hispanic Origin enum type. Please provide arguments of the right type. For reference, check CDCWonderEnums.py")
-            hispanic_origins.add(arg)
+            hispanic_origins.add(arg.value)
         if (len(hispanic_origins) > 1 and HispanicOrigin.All in hispanic_origins):
             raise ValueError(hispanic_origin_all_exception)
         if (len(hispanic_origins) > 1 and HispanicOrigin.NotStated in hispanic_origins):
@@ -308,7 +307,7 @@ class CDCWonderRequest():
         for arg in args:
             if (type(arg) != Weekday):
                 raise TypeError("Provided arguments aren't of Weekday enum type. Please provide arguments of the right type. For reference, check CDCWonderEnums.py")
-            weekdays.add(arg)
+            weekdays.add(arg.value)
         if (len(weekdays) > 1 and Weekday.All in weekdays):
             raise ValueError(weekday_exception)
         self._v_parameters["V_D76.V24"] = list(weekdays)
@@ -338,7 +337,7 @@ class CDCWonderRequest():
         for arg in args:
             if (type(arg) != Autopsy):
                 raise TypeError("Provided arguments aren't of PlaceOfDeath enum type. Please provide arguments of the right type. For reference, check CDCWonderEnums.py")
-            place_of_death_options.add(arg)
+            place_of_death_options.add(arg.value)
         if (len(place_of_death_options) > 1 and PlaceOfDeath.All in place_of_death_options):
             raise ValueError(place_of_death_exception)
         self._v_parameters["V_D76.V21"] = list(place_of_death_options)
@@ -365,7 +364,7 @@ class CDCWonderRequest():
         for arg in args:
             if (type(arg) != Autopsy):
                 raise TypeError("Provided arguments aren't of Autopsy enum type. Please provide arguments of the right type. For reference, check CDCWonderEnums.py")
-            autopsy_options.add(arg)
+            autopsy_options.add(arg.value)
         if (len(autopsy_options) > 1 and Autopsy.All in autopsy_options):
             raise ValueError(autopsy_exception)
         self._v_parameters["V_D76.V20"] = list(autopsy_options)
@@ -385,4 +384,5 @@ if __name__ == '__main__':
     # Example of setter
     req.set_hispanic_origin(HispanicOrigin.HispanicOrLatino, HispanicOrigin.NotHispanicOrLatino)
 
-    req.send()
+    response = req.send()
+    print(response.as_dataframe())
