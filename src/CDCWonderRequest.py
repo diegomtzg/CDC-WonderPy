@@ -7,6 +7,10 @@ from CDCWonderExceptions import *
 from CDCWonderExceptionsPrivate import *
 
 
+'''
+#TODO - add documentation about Not Applicable/ Restricted limits
+Refer to messenger chat
+'''
 class CDCWonderRequest():
     """
     NOTE TO DEVS:
@@ -24,7 +28,6 @@ class CDCWonderRequest():
         Best parameter reference: https://github.com/alipphardt/cdc-wonder-api/blob/master/README.md
         """
         self._DEBUG = debug_mode
-        self._datause_restrictions_accepted = True
 
         # Group-by parameters.
         self._b_parameters = {
@@ -140,9 +143,6 @@ class CDCWonderRequest():
         and sends a POST request to the CDC Wonder API.
         """
 
-        if not self._datause_restrictions_accepted:
-            raise DatauseAgreementException()
-
         request_xml = "<request-parameters>\n"
         request_xml += dictToXML({"accept_datause_restrictions": "true"})
         request_xml += dictToXML(self._b_parameters)
@@ -176,10 +176,32 @@ class CDCWonderRequest():
     def set_location(self, *args):
         """ Pass in some number of locations to union, method extracts the type from the arguments,
         raise an exception if one is mismatched (at time of location function call).
+        Specify the Hispanic origin options to filter by. Default is *All*.
 
-        e.g. location(HHSRegion.H1, HHSRegion.H2, States.NY) <-- not allowed
+        @param self: is the instance this function is being called on.
+        @param args: the HispanicOrigin options that the user wants to filter by
+
+        returns: self
+
+        Exceptions raised:
+            ValueError if atleast one HispanicOrigin isn't provided, or if HispanicOrigin.All 
+                        is provided with other HispanicOrigin options
+            TypeError if arguments provided aren't of type Race
         """
-        raise NotImplementedError
+        if (len(args) == 0):
+            raise ValueError("Function expects atleast one argument")
+        typeOfArgs = type(args[0])
+        if (typeOfArgs not in [States, CensusRegion, HHSRegion]):
+            raise TypeError("Provided arguments aren't any of type Stages, CensusRegion or HHSRegion")
+
+        locations = set()
+        for arg in args:
+            if (type(arg) != typeOfArgs):
+                raise TypeError("Mismatched location types provided. " + str(arg) + " doesn't match type of previous arguments. Please provide arguments of the same location type. For reference, check CDCWonderEnums.py")
+            locations.add(arg.value) 
+        self._f_parameters["F_D76.V9"] = list(locations)
+        self._i_parameters["I_D76.V9"] = list(locations)
+        return self
 
     def set_urbanization(self, *args):
         """
@@ -210,7 +232,7 @@ class CDCWonderRequest():
         """
         if (type(gender) != Gender):
             raise TypeError
-        # v or vm params?
+        # TODO -> v or vm params?
         self._v_parameters["V_D76.V7"] = gender.value
         return self
 
@@ -369,12 +391,13 @@ class CDCWonderRequest():
 # Sample code
 if __name__ == '__main__':
     req = CDCWonderRequest()
-
     # Example of setter
     req.set_hispanic_origin(HispanicOrigin.HispanicOrLatino, HispanicOrigin.NotHispanicOrLatino)
-    req.set_gender(Gender.Female).set_race(Race.Asian)
-    # req.set_weekday(Weekday.Sun).set_autopsy(Autopsy.Yes)
+    # req.set_gender(Gender.Female).set_race(Race.Asian)
+    # req.set_weekday(Weekday.Sun, Weekday.Mon, Weekday.Thu)
+    # req.set_autopsy(Autopsy.Yes)
     # req.set_place_of_death(PlaceOfDeath.DecedentHome)
+    req.set_location(States.Washington)
     response = req.send()
-    #TODO - document 
+    #TODO-> status 500 is empty dataframe or error maybe?
     print(response.as_dataframe())
