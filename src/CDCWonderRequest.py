@@ -174,19 +174,17 @@ class CDCWonderRequest():
     #########################################
 
     def set_location(self, *args):
-        """ Pass in some number of locations to union, method extracts the type from the arguments,
-        raise an exception if one is mismatched (at time of location function call).
-        Specify the Hispanic origin options to filter by. Default is *All*.
-
+        """ 
+        Pass in a non-zero number of locations of the same location type
+  
         @param self: is the instance this function is being called on.
-        @param args: the HispanicOrigin options that the user wants to filter by
-
+        @param args: the location (States/CensusRegion/HHSRegion) options that the user wants to filter by
+                    Note that all provided args must be of the same location type.
         returns: self
 
         Exceptions raised:
-            ValueError if atleast one HispanicOrigin isn't provided, or if HispanicOrigin.All 
-                        is provided with other HispanicOrigin options
-            TypeError if arguments provided aren't of type Race
+            ValueError if atleast one location isn't provided
+            TypeError if arguments provided aren't of the same location type.
         """
         if (len(args) == 0):
             raise ValueError("Function expects atleast one argument")
