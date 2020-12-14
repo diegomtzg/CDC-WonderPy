@@ -152,7 +152,9 @@ class CDCWonderRequest():
         response = requests.post(url, data={"request_xml": request_xml})
 
         # TODO: Error handling based on response.status_code
+        print(request_xml)
         print("This is the status code: " + str(response.status_code))
+        print(response.text)
 
         return CDCWonderResponse(response.text)
 
@@ -191,10 +193,28 @@ class CDCWonderRequest():
         self._i_parameters["I_D76.V9"] = list(locations)
         return self
 
-    def set_urbanization(self, *args):
+    def set_urbanization(self, urbanizationYear, *args):
         """
+        Pass in a non-zero number of locations of the same location type
+        :param urbanizationYear: the urbanization year to filter by
+        :param args: the urbanization categories that the user wants to filter by
+        :returns: self
+        :raises: ValueError if at least one urbanization category isn't provided
         """
-        raise NotImplementedError
+        if (len(args) == 0):
+            raise ValueError("Method expects at least one urbanization argument.")
+
+        # TODO: Only national data are available for this dataset when using the WONDER web service. Please check that your query does not group results by region, division, state, county or urbanization, (B_1 through B_5), nor limit these location variables to any specific values.
+
+        categories = set()
+        for arg in args:
+           categories.add(arg.value)
+        self._o_parameters["O_urban"] = urbanizationYear.value
+        if urbanizationYear == UrbanizationYear.Year2013:
+            self._v_parameters["V_D76.V19"] = list(categories)
+        else:
+            self._v_parameters["V_D76.V11"] = list(categories)
+        return self
 
 
     #########################################
@@ -275,7 +295,6 @@ class CDCWonderRequest():
     #########################################
     #### Chronology
     #########################################
-
     def set_dates(self, *args):
         """
         """
@@ -361,8 +380,12 @@ if __name__ == '__main__':
     # req.set_hispanic_origin(HispanicOrigin.HispanicOrLatino, HispanicOrigin.NotHispanicOrLatino)
     # req.set_gender(Gender.Female).set_race(Race.Asian)
     # req.set_weekday(Weekday.Sun, Weekday.Mon, Weekday.Thu)
-    req.set_autopsy(Autopsy.Yes)
+    #req.set_autopsy(Autopsy.Yes)
     # req.set_place_of_death(PlaceOfDeath.DecedentHome)
-    # req.set_location(States.Washington)
+    # req.set_location(States.Washington) # TODO: Doesn't work?
+
+    # TODO: Passing year here looks confusing (how to tell it apart from other two args? maybe set urbanization year with separate method?)
+    # req.set_urbanization(UrbanizationYear.Year2013, UrbanizationCategory.LargeCentralMetro, UrbanizationCategory.LargeFringeMetro)
+
     response = req.send()
     print(response.as_dataframe())

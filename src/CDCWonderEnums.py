@@ -1,7 +1,8 @@
 from enum import Enum
 
-#Location enums
-
+#########################################
+#### Location Enums
+#########################################
 class States(Enum):
     All = "*All*"
     Alabama = "1" 
@@ -74,9 +75,24 @@ class HHSRegion(Enum):
     HHSRegion7 = "HHS7"
     HHSRegion8 = "HHS8"
     HHSRegion9 = "HHS9"
-    HHSRegion10 = "HHS10"  
-#Demographic data enums
+    HHSRegion10 = "HHS10"
 
+class UrbanizationYear(Enum):
+    Year2013 = "D76.V19"
+    Year2006 = "D76.V11"
+
+class UrbanizationCategory(Enum):
+    All = "*All*"
+    LargeCentralMetro = "1"
+    LargeFringeMetro = "2"
+    MediumMetro = "3"
+    SmallMetro = "4"
+    Micropolitan = "5"
+    NonCore = "6"
+
+#########################################
+#### Demographic Enums
+#########################################
 class Gender(Enum):
     All = "*All*"
     Male = "M"
@@ -95,8 +111,9 @@ class Race(Enum):
     AfricanAmerican = "2054-5"
     White = "2106-3"
 
-#Chronology enums
-
+#########################################
+#### Chronology Enums
+#########################################
 class Weekday(Enum):
     All = "*All*"
     Sun = "1"
@@ -108,8 +125,9 @@ class Weekday(Enum):
     Sat = "7"
     Unknown = "9"
 
-#Miscellaneous data enums
-
+#########################################
+#### Miscellaneous Enums
+#########################################
 class PlaceOfDeath(Enum):
     All = "*All*"
     MedicalFacilityInpatient = "1"
