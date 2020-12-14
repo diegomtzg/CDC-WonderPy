@@ -9,6 +9,7 @@ class CDCWonderRequest():
     """
 
     TODO: Add documentation about Not Applicable/Restricted limits
+    TODO: Add documentation about not being able to group by location and urbanization
     Population and rates are labeled 'Not Applicable' when Autopsy, Place of Death, Weekday or
     Month are grouped by or limited, due to lack of a valid population.
     """
@@ -131,8 +132,10 @@ class CDCWonderRequest():
 
     def send(self) -> "CDCWonderResponse":
         """
-        Builds an XML parameter document with the parameter values from the current internal state
+        TODO: I don't think we should mention that this builds an xml parameter document, that's an implementation detail
+        Previously ->Builds an XML parameter document with the parameter values from the current internal state
         and sends a POST request to the CDC Wonder API.
+        I propose -> Sends a request to the CDCWonder API and returns ??? (or something of this sort)
         :returns: a CDCWonderResponse object representing the request for the response
         """
 
@@ -162,14 +165,13 @@ class CDCWonderRequest():
     #########################################
     #### Organize Table Layout
     #########################################
-    def set_grouping(self, *args):
+    def grouping(self, *args):
         raise NotImplementedError
-
 
     #########################################
     #### Location
     #########################################
-    def set_location(self, *args):
+    def region(self, *args):
         """ 
         Pass in a non-zero number of locations of the same location type
         :param args: the location (States/CensusRegion/HHSRegion) options that the user wants to filter by
@@ -193,10 +195,10 @@ class CDCWonderRequest():
         self._i_parameters["I_D76.V9"] = list(locations)
         return self
 
-    def set_urbanization(self, urbanizationYear, *args):
+    def urbanization(self, urbanization_year, *args):
         """
         Pass in a non-zero number of locations of the same location type
-        :param urbanizationYear: the urbanization year to filter by
+        :param urbanization_year: the urbanization year to filter by
         :param args: the urbanization categories that the user wants to filter by
         :returns: self
         :raises: ValueError if at least one urbanization category isn't provided
@@ -209,8 +211,8 @@ class CDCWonderRequest():
         categories = set()
         for arg in args:
            categories.add(arg.value)
-        self._o_parameters["O_urban"] = urbanizationYear.value
-        if urbanizationYear == UrbanizationYear.Year2013:
+        self._o_parameters["O_urban"] = urbanization_year.value
+        if urbanization_year == urbanization_year.Year2013:
             self._v_parameters["V_D76.V19"] = list(categories)
         else:
             self._v_parameters["V_D76.V11"] = list(categories)
@@ -221,12 +223,12 @@ class CDCWonderRequest():
     #### Demographic
     #########################################
 
-    def set_age_groups(self, *args):
+    def age_groups(self, *args):
         """
         """
         raise NotImplementedError
 
-    def set_gender(self, *args):
+    def gender(self, *args):
         """
         Specify which Gender option to filter by. Default is *All*.
         :param gender: the gender option that the user wants to filter by
@@ -248,7 +250,7 @@ class CDCWonderRequest():
         self._v_parameters["V_D76.V7"] = list(gender_options)
         return self
 
-    def set_race(self, *args):
+    def race(self, *args):
         """
         Specify the Race options to filter by. Default is *All*.
         :param args: the race options that the user wants to filter by
@@ -269,7 +271,7 @@ class CDCWonderRequest():
         self._v_parameters["V_D76.V8"] = list(races)
         return self
 
-    def set_hispanic_origin(self, *args):
+    def hispanic_origin(self, *args):
         """
         Specify the Hispanic origin options to filter by. Default is *All*.
         :param args: the HispanicOrigin options that the user wants to filter by
@@ -295,12 +297,12 @@ class CDCWonderRequest():
     #########################################
     #### Chronology
     #########################################
-    def set_dates(self, *args):
+    def dates(self, *args):
         """
         """
         raise NotImplementedError
 
-    def set_weekday(self, *args):
+    def weekday(self, *args):
         """
         Specify weekday options to filter by. Default is *All*.
         :param args: the Weekday options that the user wants to filter by
@@ -325,7 +327,7 @@ class CDCWonderRequest():
     #### Miscellaneous
     #########################################
 
-    def set_place_of_death(self, *args):
+    def place_of_death(self, *args):
         """
         Specify the Place of Death options to filter by. Default is *All*.
         :param args: the PlaceOfDeath options that the user wants to filter by
@@ -347,7 +349,7 @@ class CDCWonderRequest():
         return self
 
 
-    def set_autopsy(self, *args):
+    def autopsy(self, *args):
         """
         Specify the Autopsy options to filter by. Default is *All*.
         :param args: the Autopsy options that the user wants to filter by
@@ -368,7 +370,7 @@ class CDCWonderRequest():
         self._v_parameters["V_D76.V20"] = list(autopsy_options)
         return self
 
-    def set_cause_of_death(self, *args):
+    def cause_of_death(self, *args):
         """
         """
         raise NotImplementedError
@@ -377,15 +379,15 @@ class CDCWonderRequest():
 # Sample code
 if __name__ == '__main__':
     req = CDCWonderRequest()
-    # req.set_hispanic_origin(HispanicOrigin.HispanicOrLatino, HispanicOrigin.NotHispanicOrLatino)
-    # req.set_gender(Gender.Female).set_race(Race.Asian)
-    # req.set_weekday(Weekday.Sun, Weekday.Mon, Weekday.Thu)
-    #req.set_autopsy(Autopsy.Yes)
-    # req.set_place_of_death(PlaceOfDeath.DecedentHome)
-    # req.set_location(States.Washington) # TODO: Doesn't work?
+    # req.hispanic_origin(HispanicOrigin.HispanicOrLatino, HispanicOrigin.NotHispanicOrLatino)
+    # req.gender(Gender.Female).race(Race.Asian)
+    # req.weekday(Weekday.Sun, Weekday.Mon, Weekday.Thu)
+    #req.autopsy(Autopsy.Yes)
+    # req.place_of_death(PlaceOfDeath.DecedentHome)
+    # req.region(States.Washington) # TODO: Doesn't work?
 
     # TODO: Passing year here looks confusing (how to tell it apart from other two args? maybe set urbanization year with separate method?)
-    # req.set_urbanization(UrbanizationYear.Year2013, UrbanizationCategory.LargeCentralMetro, UrbanizationCategory.LargeFringeMetro)
+    # req.urbanization(urbanization_year.Year2013, UrbanizationCategory.LargeCentralMetro, UrbanizationCategory.LargeFringeMetro)
 
     response = req.send()
     print(response.as_dataframe())

@@ -1,7 +1,7 @@
 from enum import Enum
 
 #########################################
-#### Location Enums
+#### Region Enums
 #########################################
 class States(Enum):
     All = "*All*"
