@@ -1,22 +1,16 @@
 import requests
-
 from CDCWonderResponse import CDCWonderResponse
 from utils import dictToXML
 from CDCWonderEnums import *
-from CDCWonderExceptions import *
-from CDCWonderExceptionsPrivate import *
+from ExceptionMessages import *
 
 
-'''
-#TODO - add documentation about Not Applicable/ Restricted limits
-Refer to messenger chat
-'''
 class CDCWonderRequest():
     """
-    NOTE TO DEVS:
-    + Always return self
-    + Getters for each setting method
-        ¿ Or a getter for entire internal state ?
+
+    TODO: Add documentation about Not Applicable/Restricted limits
+    Population and rates are labeled 'Not Applicable' when Autopsy, Place of Death, Weekday or
+    Month are grouped by or limited, due to lack of a valid population.
     """
 
     def __init__(self, debug_mode=False):
@@ -24,8 +18,6 @@ class CDCWonderRequest():
         Initializes the internal state of this request builder with the
         default parameter values so that users can easily get the most general
         version of the data.
-
-        Best parameter reference: https://github.com/alipphardt/cdc-wonder-api/blob/master/README.md
         """
         self._DEBUG = debug_mode
 
@@ -105,14 +97,14 @@ class CDCWonderRequest():
             "O_aar": "aar_none",  # age-adjusted rates
             "O_aar_pop": "0000",  # population selection for age-adjusted rates
             "O_age": "D76.V5",  # 10-year age groups (could be ten-year, five-year, single-year, infant groups)
-            "O_javascript": "on",  # Set to on by default # TODO: Off since not in browser?
+            "O_javascript": "on",  # Set to on by default
             "O_location": "D76.V9",  # select location variable to use (states here, but could be census or hhs regions)
             "O_precision": "9",  # decimal places (max)
             "O_rate_per": "100000",  # rates calculated per X persons
             "O_show_totals": "true",  # Show totals
             "O_show_zeros": "true",  # Show zero values
-            "O_timeout": "600",  # TODO: Do we care about data access timeout?
-            "O_title": "",  # TODO: Do we want to set this title?
+            "O_timeout": "600",
+            "O_title": "CDCWonderAPI Request",
             "O_ucd": "D76.V2",  # select underlying cause of death category (ICD-10 by default)
             "O_urban": "D76.V19"  # select urbanization category (2013 by default)
         }
@@ -141,6 +133,7 @@ class CDCWonderRequest():
         """
         Builds an XML parameter document with the parameter values from the current internal state
         and sends a POST request to the CDC Wonder API.
+        :returns: a CDCWonderResponse object representing the request for the response
         """
 
         request_xml = "<request-parameters>\n"
@@ -157,14 +150,16 @@ class CDCWonderRequest():
 
         url = "https://wonder.cdc.gov/controller/datarequest/D76"
         response = requests.post(url, data={"request_xml": request_xml})
-        print("This is the status code: " + str(response.status_code)) # TODO: Error handling    
+
+        # TODO: Error handling based on response.status_code
+        print("This is the status code: " + str(response.status_code))
+
         return CDCWonderResponse(response.text)
 
 
     #########################################
     #### Organize Table Layout
     #########################################
-
     def set_grouping(self, *args):
         raise NotImplementedError
 
@@ -172,22 +167,17 @@ class CDCWonderRequest():
     #########################################
     #### Location
     #########################################
-
     def set_location(self, *args):
         """ 
         Pass in a non-zero number of locations of the same location type
-  
-        @param self: is the instance this function is being called on.
-        @param args: the location (States/CensusRegion/HHSRegion) options that the user wants to filter by
+        :param args: the location (States/CensusRegion/HHSRegion) options that the user wants to filter by
                     Note that all provided args must be of the same location type.
-        returns: self
-
-        Exceptions raised:
-            ValueError if atleast one location isn't provided
-            TypeError if arguments provided aren't of the same location type.
+        :returns: self
+        :raises: ValueError if at least one location isn't provided
+                 TypeError if arguments provided aren't of the same location type.
         """
         if (len(args) == 0):
-            raise ValueError("Function expects atleast one argument")
+            raise ValueError("Method expects at least one location argument.")
         typeOfArgs = type(args[0])
         if (typeOfArgs not in [States, CensusRegion, HHSRegion]):
             raise TypeError("Provided arguments aren't any of type Stages, CensusRegion or HHSRegion")
@@ -216,40 +206,39 @@ class CDCWonderRequest():
         """
         raise NotImplementedError
 
-    def set_gender(self, gender):
+    def set_gender(self, *args):
         """
         Specify which Gender option to filter by. Default is *All*.
-
-        @param self: is the instance this function is being called on.
-        @param gender: the gender option that the user wants to filter by
-
-        returns: self
-
-        Exceptions raised:
-            TypeError if argument "gender" provided isn't of type Gender
+        :param gender: the gender option that the user wants to filter by
+        :returns: self
+        :raises: ValueError if at least one race isn't provided or if Gender.All
+                        is provided with other Gender options
+                 TypeError if arguments provided aren't of type Gender
         """
-        if (type(gender) != Gender):
-            raise TypeError
+        if (len(args) == 0):
+            raise ValueError("Method expects at least one Gender value.")
+        gender_options = set()
+        for arg in args:
+            if (type(arg) != Gender):
+                raise TypeError("Provided arguments aren't of Gender enum type. Please provide arguments of the right type. For reference, check CDCWonderEnums.py")
+            gender_options.add(arg.value)
+        if (len(gender_options) > 1 and Gender.All in gender_options):
+            raise ValueError(gender_exception)
         # TODO -> v or vm params?
-        self._v_parameters["V_D76.V7"] = gender.value
+        self._v_parameters["V_D76.V7"] = list(gender_options)
         return self
 
     def set_race(self, *args):
         """
         Specify the Race options to filter by. Default is *All*.
-
-        @param self: is the instance this function is being called on.
-        @param args: the race options that the user wants to filter by
-
-        returns: self
-
-        Exceptions raised:
-            ValueError if atleast one race isn't provided or if Race.All 
+        :param args: the race options that the user wants to filter by
+        :returns: self
+        :raises: ValueError if at least one race isn't provided or if Race.All
                         is provided with other Race options
-            TypeError if arguments provided aren't of type Race
+                 TypeError if arguments provided aren't of type Race
         """
         if (len(args) == 0):
-            raise ValueError("Function expects atleast one Race")
+            raise ValueError("Method expects at least one Race value.")
         races = set()
         for arg in args:
             if (type(arg) != Race):
@@ -263,19 +252,14 @@ class CDCWonderRequest():
     def set_hispanic_origin(self, *args):
         """
         Specify the Hispanic origin options to filter by. Default is *All*.
-
-        @param self: is the instance this function is being called on.
-        @param args: the HispanicOrigin options that the user wants to filter by
-
-        returns: self
-
-        Exceptions raised:
-            ValueError if atleast one HispanicOrigin isn't provided, or if HispanicOrigin.All 
+        :param args: the HispanicOrigin options that the user wants to filter by
+        :returns: self
+        :raises: ValueError if at least one HispanicOrigin isn't provided, or if HispanicOrigin.All
                         is provided with other HispanicOrigin options
-            TypeError if arguments provided aren't of type Race
+                 TypeError if arguments provided aren't of type Race
         """
         if (len(args) == 0):
-            raise ValueError("Function expects atleast one HispanicOrigin")
+            raise ValueError("Method expects at least one HispanicOrigin value.")
         hispanic_origins = set()
         for arg in args:
             if (type(arg) != HispanicOrigin):
@@ -300,19 +284,14 @@ class CDCWonderRequest():
     def set_weekday(self, *args):
         """
         Specify weekday options to filter by. Default is *All*.
-
-        @param self: is the instance this function is being called on.
-        @param args: the Weekday options that the user wants to filter by
-
-        returns: self
-
-        Exceptions raised:
-            ValueError if atleast one Weekday option isn't provided, or if Weekday.All 
+        :param args: the Weekday options that the user wants to filter by
+        :returns: self
+        :raises: ValueError if at least one Weekday option isn't provided, or if Weekday.All
                         is provided with other Weekday options
-            TypeError if arguments provided aren't of type Weekday
+                 TypeError if arguments provided aren't of type Weekday
         """
         if (len(args) == 0):
-            raise ValueError("Function expects atleast one Weekday")
+            raise ValueError("Method expects at least one Weekday value.")
         weekdays = set()
         for arg in args:
             if (type(arg) != Weekday):
@@ -330,19 +309,14 @@ class CDCWonderRequest():
     def set_place_of_death(self, *args):
         """
         Specify the Place of Death options to filter by. Default is *All*.
-
-        @param self: is the instance this function is being called on.
-        @param args: the PlaceOfDeath options that the user wants to filter by
-
-        returns: self
-
-        Exceptions raised:
-            ValueError if atleast one PlaceOfDeath option isn't provided, or if PlaceOfDeath.All 
+        :param args: the PlaceOfDeath options that the user wants to filter by
+        :returns: self
+        :raises: ValueError if at least one PlaceOfDeath option isn't provided, or if PlaceOfDeath.All
                         is provided with other PlaceOfDeath options
-            TypeError if arguments provided aren't of type PlaceOfDeath
+                 TypeError if arguments provided aren't of type PlaceOfDeath
         """
         if (len(args) == 0):
-            raise ValueError("Function expects atleast one Place Of Death")
+            raise ValueError("Method expects at least one Place of Death value.")
         place_of_death_options = set()
         for arg in args:
             if (type(arg) != PlaceOfDeath):
@@ -357,19 +331,14 @@ class CDCWonderRequest():
     def set_autopsy(self, *args):
         """
         Specify the Autopsy options to filter by. Default is *All*.
-
-        @param self: is the instance this function is being called on.
-        @param args: the Autopsy options that the user wants to filter by
-
-        returns: self
-
-        Exceptions raised:
-            ValueError if atleast one Autopsy option isn't provided, or if Autopsy.All 
+        :param args: the Autopsy options that the user wants to filter by
+        :returns: self
+        :raises: ValueError if at least one Autopsy option isn't provided, or if Autopsy.All
                         is provided with other Autopsy options
-            TypeError if arguments provided aren't of type Autopsy
+                 TypeError if arguments provided aren't of type Autopsy
         """
         if (len(args) == 0):
-            raise ValueError("Function expects atleast one Race")
+            raise ValueError("Method expects at least one Autopsy value.")
         autopsy_options = set()
         for arg in args:
             if (type(arg) != Autopsy):
@@ -389,13 +358,11 @@ class CDCWonderRequest():
 # Sample code
 if __name__ == '__main__':
     req = CDCWonderRequest()
-    # Example of setter
-    req.set_hispanic_origin(HispanicOrigin.HispanicOrLatino, HispanicOrigin.NotHispanicOrLatino)
+    # req.set_hispanic_origin(HispanicOrigin.HispanicOrLatino, HispanicOrigin.NotHispanicOrLatino)
     # req.set_gender(Gender.Female).set_race(Race.Asian)
     # req.set_weekday(Weekday.Sun, Weekday.Mon, Weekday.Thu)
-    # req.set_autopsy(Autopsy.Yes)
+    req.set_autopsy(Autopsy.Yes)
     # req.set_place_of_death(PlaceOfDeath.DecedentHome)
-    req.set_location(States.Washington)
+    # req.set_location(States.Washington)
     response = req.send()
-    #TODO-> status 500 is empty dataframe or error maybe?
     print(response.as_dataframe())
