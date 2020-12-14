@@ -1,0 +1,6 @@
+map["C00-D48"] = "eye disease"
+map["C10-C19"] = "death by anvil"
+map["A00.1"] = "nerve damage"
+map["A00-A09"] = "intestinal disease"
+
+set_cause_of_death(ICD10Translator(Code.A00_1, Description("anvils")))

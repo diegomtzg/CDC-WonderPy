@@ -1,0 +1,4 @@
+set_date(1993)
+set_date_range(1993, 1995)
+set_date_ranges((1992, 1995), (1997, 2001))
+set_dates(1992, 1995, 2003)
