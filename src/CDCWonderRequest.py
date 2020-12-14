@@ -7,16 +7,14 @@ from utils import dictToXML
 from CDCWonderEnums import *
 from ExceptionMessages import *
 
-
 class CDCWonderRequest():
     """
-
     * # TODO: General documentation about the API
 
     *******************************************************************************************
     * LIMITATION: ASSURANCE OF CONFIDENTIALITY
     *******************************************************************************************
-    * |Suppressed \|
+    * |Suppressed|
     * Vital statistics data are suppressed due to confidentiality constraints, in order to
     * protect personal privacy. The term "Suppressed" replaces sub-national death counts,
     * births counts, death rates and associated confidence intervals and standard errors,
@@ -201,11 +199,13 @@ class CDCWonderRequest():
     #### Organize Table Layout
     #########################################
     def grouping(self, *args):
+        # TODO(@ike)
         raise NotImplementedError
 
     #########################################
     #### Location
     #########################################
+    # TODO: Remove?
     def region(self, *args):
         """ 
         Pass in a non-zero number of locations of the same location type
@@ -231,6 +231,7 @@ class CDCWonderRequest():
         return self
 
     def urbanization(self, urbanization_year, *args):
+        # TODO: Remove?
         """
         Pass in a non-zero number of locations of the same location type
         :param urbanization_year: the urbanization year to filter by
@@ -240,8 +241,6 @@ class CDCWonderRequest():
         """
         if (len(args) == 0):
             raise ValueError("Method expects at least one urbanization argument.")
-
-        # TODO: Only national data are available for this dataset when using the WONDER web service. Please check that your query does not group results by region, division, state, county or urbanization, (B_1 through B_5), nor limit these location variables to any specific values.
 
         categories = set()
         for arg in args:
@@ -334,6 +333,7 @@ class CDCWonderRequest():
     def dates(self, *args):
         """
         """
+        # TODO(@joel)
         raise NotImplementedError
 
     def weekday(self, *args):
@@ -407,6 +407,7 @@ class CDCWonderRequest():
     def cause_of_death(self, *args):
         """
         """
+        # TODO(@joel)
         raise NotImplementedError
 
 
