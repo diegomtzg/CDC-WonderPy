@@ -1,5 +1,5 @@
 
-#ValueError exception strings
+# ValueError exception strings
 race_exception = "Race has both 'All' and other options selected. Please select either 'All' or specific options."
 hispanic_origin_all_exception = "Hispanic Origin has both 'All' and other options selected. Please select either 'All' or specific options."
 hispanic_origin_ns_exception = "The 'Not Stated' Hispanic Origin value cannot be combined with other values."
@@ -8,7 +8,6 @@ gender_exception = "Gender has both 'All Genders' and other options selected. Pl
 place_of_death_exception = "PlaceOfDeath has both 'All' and other options selected. Please select either 'All' or specific options."
 weekday_exception = "PlaceOfDeath has both 'All' and other options selected. Please select either 'All' or specific options."
 
-#TODO - 
-#TypeError exceptions
+#TODO - TypeError exceptions
 
 #TODO should we make these inherit from ValueError? What is the relevant python error?

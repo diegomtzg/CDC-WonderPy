@@ -1,4 +1,7 @@
 import requests
+import bs4 as bs
+from requests import RequestException
+
 from CDCWonderResponse import CDCWonderResponse
 from utils import dictToXML
 from CDCWonderEnums import *
@@ -8,19 +11,49 @@ from ExceptionMessages import *
 class CDCWonderRequest():
     """
 
-    TODO: Add documentation about Not Applicable/Restricted limits
-    TODO: Add documentation about not being able to group by location and urbanization
-    Population and rates are labeled 'Not Applicable' when Autopsy, Place of Death, Weekday or
-    Month are grouped by or limited, due to lack of a valid population.
+    * # TODO: General documentation about the API
+
+    *******************************************************************************************
+    * LIMITATION: ASSURANCE OF CONFIDENTIALITY
+    *******************************************************************************************
+    * |Suppressed \|
+    * Vital statistics data are suppressed due to confidentiality constraints, in order to
+    * protect personal privacy. The term "Suppressed" replaces sub-national death counts,
+    * births counts, death rates and associated confidence intervals and standard errors,
+    * as well as corresponding population figures, when the figure represents zero to
+    * nine (0-9) persons.
+    *
+    * |Unreliable|
+    * Rates are marked as "unreliable" when the death count is less than 20.
+    *
+    * |Not Applicable|
+    * Rates are marked as "not applicable" when the population denominator figure is
+    * unavailable, such as persons of "not stated" or unknown age or Hispanic origin.
+    *
+    * For more information, see: https://wonder.cdc.gov/wonder/help/ucd.html
+    *******************************************************************************************
+
+
+    *******************************************************************************************
+    * LIMITATION: VITAL STATISTICS POLICY FOR PUBLIC DATA SHARING
+    *******************************************************************************************
+    * Queries for mortality and births statistics cannot limit or group results by any
+    * location field, such as Region, Division, State or County, or Urbanization.
+    *
+    * For example, in the D76 online database for Detailed Mortality 1999-2013, the location
+    * fields are D76.V9, D76.V10 and D76.V27, and the urbanization fields are D76.V11 and
+    * D76.V19. These 'sub-national" data fields cannot be grouped by or limited via the API,
+    * although these fields are available in the web application.
+    *
+    * For more information, see: https://wonder.cdc.gov/wonder/help/WONDER-API.html
+    *******************************************************************************************
     """
 
-    def __init__(self, debug_mode=False):
+    def __init__(self):
         """
-        Initializes the internal state of this request builder with the
-        default parameter values so that users can easily get the most general
-        version of the data.
+        Default constructor initializes request to the same default values as the API's web GUI.
+        This enables users to easily get the most general version of the data.
         """
-        self._DEBUG = debug_mode
 
         # Group-by parameters.
         self._b_parameters = {
@@ -43,7 +76,7 @@ class CDCWonderRequest():
         # Format for F parameters: <year1> <year2> or <year1>/<month1> <year2>/<month2>
         self._f_parameters = {
             "F_D76.V1": ["*All*"],  # year/month
-            "F_D76.V10": ["*All*"],  # Census Regions - dont change
+            "F_D76.V10": ["*All*"],  # Census Regions - dont change (see above for limitations)
             "F_D76.V2": ["*All*"],  # ICD-10 Codes
             "F_D76.V27": ["*All*"],  # HHS Regions - dont change
             "F_D76.V9": ["*All*"]  # State County - dont change
@@ -132,10 +165,7 @@ class CDCWonderRequest():
 
     def send(self) -> "CDCWonderResponse":
         """
-        TODO: I don't think we should mention that this builds an xml parameter document, that's an implementation detail
-        Previously ->Builds an XML parameter document with the parameter values from the current internal state
-        and sends a POST request to the CDC Wonder API.
-        I propose -> Sends a request to the CDCWonder API and returns ??? (or something of this sort)
+        Sends this request to the CDC Wonder API and returns the response as a CDCWonderResponse.
         :returns: a CDCWonderResponse object representing the request for the response
         """
 
@@ -154,10 +184,15 @@ class CDCWonderRequest():
         url = "https://wonder.cdc.gov/controller/datarequest/D76"
         response = requests.post(url, data={"request_xml": request_xml})
 
-        # TODO: Error handling based on response.status_code
-        print(request_xml)
-        print("This is the status code: " + str(response.status_code))
-        print(response.text)
+        # Raise exception based on response status code and server error messages.
+        if response.status_code != 200:
+            error_messages = bs.BeautifulSoup(response.text, "lxml").find_all("message")
+
+            exception_message = ""
+            for message in error_messages:
+                exception_message = exception_message + message.contents[0] + "\n"
+
+            raise RequestException("The server returned an error: " + exception_message)
 
         return CDCWonderResponse(response.text)
 
@@ -222,7 +257,6 @@ class CDCWonderRequest():
     #########################################
     #### Demographic
     #########################################
-
     def age_groups(self, *args):
         """
         """
@@ -387,7 +421,7 @@ if __name__ == '__main__':
     # req.region(States.Washington) # TODO: Doesn't work?
 
     # TODO: Passing year here looks confusing (how to tell it apart from other two args? maybe set urbanization year with separate method?)
-    # req.urbanization(urbanization_year.Year2013, UrbanizationCategory.LargeCentralMetro, UrbanizationCategory.LargeFringeMetro)
+    # req.urbanization(UrbanizationYear.Year2013, UrbanizationCategory.LargeCentralMetro, UrbanizationCategory.LargeFringeMetro)
 
     response = req.send()
     print(response.as_dataframe())
