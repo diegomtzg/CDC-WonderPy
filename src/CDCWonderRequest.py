@@ -165,6 +165,7 @@ class CDCWonderRequest():
         """
         Sends this request to the CDC Wonder API and returns the response as a CDCWonderResponse.
         :returns: a CDCWonderResponse object representing the request for the response
+        :raises: RequestException when the server responds with an error (see exception message for details).
         """
 
         request_xml = "<request-parameters>\n"
