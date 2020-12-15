@@ -1,17 +1,17 @@
 import requests
-import bs4 as bs
 from requests import RequestException
+import bs4 as bs
 
+from Exceptions import CDCWonderExceptions
 from CDCWonderResponse import CDCWonderResponse
 from CDCWonderEnums import *
-from ExceptionMessages import *
 from Dates import *
 from utils import dictToXML
 
 class CDCWonderRequest():
     """
-    * # TODO: General documentation about the API
-
+    * A wrapper
+    *
     *******************************************************************************************
     * LIMITATION: ASSURANCE OF CONFIDENTIALITY
     *******************************************************************************************
@@ -168,8 +168,8 @@ class CDCWonderRequest():
     def send(self) -> "CDCWonderResponse":
         """
         Sends this request to the CDC Wonder API and returns the response as a CDCWonderResponse.
-        :returns: a CDCWonderResponse object representing the request for the response
-        :raises: RequestException when the server responds with an error (see exception message for details).
+        :returns CDCWonderResponse: object representing the response of the server
+        :raises RequestException: when the server responds with an error (see exception message for details).
         """
 
         request_xml = "<request-parameters>\n"
@@ -209,10 +209,10 @@ class CDCWonderRequest():
         dates to cause of death. Note that filtering by Months will cause Population and
         Crude Rate / 100k columns to be marked "Not Applicable".
 
-        @param  *args:      Table groupings by which the user can format the requested data.
-        @raises ValueError: If user inputs less than one or greater than 5 arguments.
-        @raises TypeError:  If inputted arguments are not all of type Grouping.
-        @returns:           Same CDCWonderRequest object.
+        :param  args:       Table groupings by which the user can format the requested data.
+        :returns:           self
+        :raises ValueError: If user inputs less than one or greater than 5 arguments.
+        :raises TypeError:  If inputted arguments are not all of type Grouping.
         """
         if (len(args) == 0):
             raise ValueError("Method expects at least one grouping argument.")
@@ -241,15 +241,15 @@ class CDCWonderRequest():
     #########################################
     #### Location
     #########################################
-    # TODO: Remove?
     def region(self, *args):
         """ 
         Pass in a non-zero number of locations of the same location type
-        :param args: the location (States/CensusRegion/HHSRegion) options that the user wants to filter by
-                    Note that all provided args must be of the same location type.
-        :returns: self
-        :raises: ValueError if at least one location is not provided
-                 TypeError if arguments provided are not of the same location type.
+        :param args:        the location (States/CensusRegion/HHSRegion) options that
+                            the user wants to filter by. Note that all provided args
+                            must be of the same location type.
+        :returns:           self
+        :raises ValueError: if at least one location is not provided
+        :raises TypeError:  if arguments provided are not of the same location type.
         """
         if (len(args) == 0):
             raise ValueError("Method expects at least one location argument.")
@@ -267,7 +267,6 @@ class CDCWonderRequest():
         return self
 
     def urbanization(self, urbanization_year, *args):
-        # TODO: Remove?
         """
         Pass in a non-zero number of locations of the same location type
         :param urbanization_year: the urbanization year to filter by
@@ -302,9 +301,8 @@ class CDCWonderRequest():
         Specify which Gender option to filter by. Default is *All*.
         :param gender: the gender option that the user wants to filter by
         :returns: self
-        :raises: ValueError if at least one race isn't provided or if Gender.All
-                        is provided with other Gender options
-                 TypeError if arguments provided aren't of type Gender
+        :raises ValueError: if at least one race isn't provided or if Gender.All is provided with other Gender options
+        :raises TypeError: if arguments provided aren't of type Gender
         """
         if (len(args) == 0):
             raise ValueError("Method expects at least one Gender value.")
@@ -314,8 +312,7 @@ class CDCWonderRequest():
                 raise TypeError("Provided arguments aren't of Gender enum type. Please provide arguments of the right type. For reference, check CDCWonderEnums.py")
             gender_options.add(arg.value)
         if (len(gender_options) > 1 and Gender.All in gender_options):
-            raise ValueError(gender_exception)
-        # TODO -> v or vm params?
+            raise ValueError(CDCWonderExceptions.gender_exception)
         self._v_parameters["V_D76.V7"] = list(gender_options)
         return self
 
@@ -324,9 +321,8 @@ class CDCWonderRequest():
         Specify the Race options to filter by. Default is *All*.
         :param args: the race options that the user wants to filter by
         :returns: self
-        :raises: ValueError if at least one race isn't provided or if Race.All
-                        is provided with other Race options
-                 TypeError if arguments provided aren't of type Race
+        :raises: ValueError: if at least one race isn't provided or if Race.All is provided with other Race options
+        :raises TypeError: if arguments provided aren't of type Race
         """
         if (len(args) == 0):
             raise ValueError("Method expects at least one Race value.")
@@ -336,7 +332,7 @@ class CDCWonderRequest():
                 raise TypeError("Provided arguments aren't of race enum type. Please provide arguments of the right type. For reference, check CDCWonderEnums.py")
             races.add(arg.value)
         if (len(races) > 1 and Race.All in races):
-            raise ValueError(race_exception)
+            raise ValueError(CDCWonderExceptions.race_exception)
         self._v_parameters["V_D76.V8"] = list(races)
         return self
 
@@ -345,9 +341,9 @@ class CDCWonderRequest():
         Specify the Hispanic origin options to filter by. Default is *All*.
         :param args: the HispanicOrigin options that the user wants to filter by
         :returns: self
-        :raises: ValueError if at least one HispanicOrigin isn't provided, or if HispanicOrigin.All
+        :raises ValueError: if at least one HispanicOrigin isn't provided, or if HispanicOrigin.All
                         is provided with other HispanicOrigin options
-                 TypeError if arguments provided aren't of type Race
+        :raises TypeError: if arguments provided aren't of type Race
         """
         if (len(args) == 0):
             raise ValueError("Method expects at least one HispanicOrigin value.")
@@ -357,9 +353,9 @@ class CDCWonderRequest():
                 raise TypeError("Provided arguments aren't of Hispanic Origin enum type. Please provide arguments of the right type. For reference, check CDCWonderEnums.py")
             hispanic_origins.add(arg.value)
         if (len(hispanic_origins) > 1 and HispanicOrigin.All in hispanic_origins):
-            raise ValueError(hispanic_origin_all_exception)
+            raise ValueError(CDCWonderExceptions.hispanic_origin_all_exception)
         if (len(hispanic_origins) > 1 and HispanicOrigin.NotStated in hispanic_origins):
-            raise ValueError(hispanic_origin_ns_exception)        
+            raise ValueError(CDCWonderExceptions.hispanic_origin_ns_exception)
         self._v_parameters["V_D76.V17"] = list(hispanic_origins)
         return self
 
@@ -407,9 +403,8 @@ class CDCWonderRequest():
         Specify weekday options to filter by. Default is *All*.
         :param args: the Weekday options that the user wants to filter by
         :returns: self
-        :raises: ValueError if at least one Weekday option isn't provided, or if Weekday.All
-                        is provided with other Weekday options
-                 TypeError if arguments provided aren't of type Weekday
+        :raises ValueError: if at least one Weekday option isn't provided, or if Weekday.All is provided with other Weekday options
+        :raises TypeError: if arguments provided aren't of type Weekday
         """
         if (len(args) == 0):
             raise ValueError("Method expects at least one Weekday value.")
@@ -419,7 +414,7 @@ class CDCWonderRequest():
                 raise TypeError("Provided arguments aren't of Weekday enum type. Please provide arguments of the right type. For reference, check CDCWonderEnums.py")
             weekdays.add(arg.value)
         if (len(weekdays) > 1 and Weekday.All in weekdays):
-            raise ValueError(weekday_exception)
+            raise ValueError(CDCWonderExceptions.weekday_exception)
         self._v_parameters["V_D76.V24"] = list(weekdays)
         return self
 
@@ -432,9 +427,9 @@ class CDCWonderRequest():
         Specify the Place of Death options to filter by. Default is *All*.
         :param args: the PlaceOfDeath options that the user wants to filter by
         :returns: self
-        :raises: ValueError if at least one PlaceOfDeath option isn't provided, or if PlaceOfDeath.All
+        :raises ValueError: if at least one PlaceOfDeath option isn't provided, or if PlaceOfDeath.All
                         is provided with other PlaceOfDeath options
-                 TypeError if arguments provided aren't of type PlaceOfDeath
+        :raises TypeError: if arguments provided aren't of type PlaceOfDeath
         """
         if (len(args) == 0):
             raise ValueError("Method expects at least one Place of Death value.")
@@ -444,7 +439,7 @@ class CDCWonderRequest():
                 raise TypeError("Provided arguments aren't of PlaceOfDeath enum type. Please provide arguments of the right type. For reference, check CDCWonderEnums.py")
             place_of_death_options.add(arg.value)
         if (len(place_of_death_options) > 1 and PlaceOfDeath.All in place_of_death_options):
-            raise ValueError(place_of_death_exception)
+            raise ValueError(CDCWonderExceptions.place_of_death_exception)
         self._v_parameters["V_D76.V21"] = list(place_of_death_options)
         return self
 
@@ -454,9 +449,8 @@ class CDCWonderRequest():
         Specify the Autopsy options to filter by. Default is *All*.
         :param args: the Autopsy options that the user wants to filter by
         :returns: self
-        :raises: ValueError if at least one Autopsy option isn't provided, or if Autopsy.All
-                        is provided with other Autopsy options
-                 TypeError if arguments provided aren't of type Autopsy
+        :raises ValueError: if at least one Autopsy option isn't provided, or if Autopsy.All is provided with other Autopsy options
+        :raises TypeError: if arguments provided aren't of type Autopsy
         """
         if (len(args) == 0):
             raise ValueError("Method expects at least one Autopsy value.")
@@ -466,7 +460,7 @@ class CDCWonderRequest():
                 raise TypeError("Provided arguments aren't of Autopsy enum type. Please provide arguments of the right type. For reference, check CDCWonderEnums.py")
             autopsy_options.add(arg.value)
         if (len(autopsy_options) > 1 and Autopsy.All in autopsy_options):
-            raise ValueError(autopsy_exception)
+            raise ValueError(CDCWonderExceptions.autopsy_exception)
         self._v_parameters["V_D76.V20"] = list(autopsy_options)
         return self
 
@@ -480,7 +474,7 @@ class CDCWonderRequest():
 # Sample code
 if __name__ == '__main__':
     req = CDCWonderRequest()
-    #req.dates(Dates.of(CalendarMonth(4, 2005)))
+    # req.dates(Dates.of(CalendarMonth(4, 2005)))
     req.dates(Dates.range(Year(2001), Year(2003)))
     # req.dates(Dates.range(Year(2001), Year(2003)), Dates.of(CalendarMonth(4, 2005)), Dates.range(CalendarMonth(6, 2003), CalendarMonth(9, 2004)))
     # req.hispanic_origin(HispanicOrigin.HispanicOrLatino, HispanicOrigin.NotHispanicOrLatino)
@@ -488,10 +482,6 @@ if __name__ == '__main__':
     # req.weekday(Weekday.Sun, Weekday.Mon, Weekday.Thu)
     #req.autopsy(Autopsy.Yes)
     # req.place_of_death(PlaceOfDeath.DecedentHome)
-    # req.region(States.Washington) # TODO: Doesn't work?
-
-    # TODO: Passing year here looks confusing (how to tell it apart from other two args? maybe set urbanization year with separate method?)
-    # req.urbanization(UrbanizationYear.Year2013, UrbanizationCategory.LargeCentralMetro, UrbanizationCategory.LargeFringeMetro)
 
     req.group_by(Grouping.Gender, Grouping.Year)
 
