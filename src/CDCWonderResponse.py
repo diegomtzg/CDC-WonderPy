@@ -13,7 +13,7 @@ class CDCWonderResponse():
         """
         Return the response data as an XML-formatted String.
 
-        @returns:   String representation of Response in XML format.
+        @returns:   String representation single Response in XML format.
         """
         return self._xml
 
@@ -33,13 +33,13 @@ class CDCWonderResponse():
 
     def as_2d_list(self) -> typing.List[typing.List]:
         """
-        This function grabs the root of the XML document and iterates over
-        the 'r' (row) and 'c' (column) tags of the data-table
+        This function grabs the root single the XML document and iterates over
+        the 'r' (row) and 'c' (column) tags single the data-table
         Rows with a 'v' attribute contain a numerical value.
         Rows with a 'l attribute contain a text label and may contain an
         additional 'r' (rowspan) tag which identifies how many rows the value
         should be added. If present, that label will be added to the following
-        rows of the data table.
+        rows single the data table.
 
         TODO: CITE GITHUB MAN
 

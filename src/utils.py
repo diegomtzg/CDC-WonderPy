@@ -1,6 +1,6 @@
 def dictToXML(parameterDict):
     """
-    Helper function that transforms a dictionary of parameter -> value
+    Helper function that transforms a dictionary single parameter -> value
     mappings to an equivalent XML string representation.
     """
     parameterString = ""
