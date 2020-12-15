@@ -3,7 +3,7 @@ import bs4 as bs
 from requests import RequestException
 
 from CDCWonderResponse import CDCWonderResponse
-from utils import dictToXML, datesToIParam
+from utils import dictToXML
 from CDCWonderEnums import *
 from ExceptionMessages import *
 from Dates import *
@@ -56,7 +56,7 @@ class CDCWonderRequest():
 
         # Group-by parameters.
         self._b_parameters = {
-            "B_1": "D76.V1-level2",  # year
+            "B_1": "D76.V1-level1",  # year
             "B_2": "*None*",
             "B_3": "*None*",
             "B_4": "*None*",

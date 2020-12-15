@@ -1,5 +1,3 @@
-from Dates import *
-
 def dictToXML(parameterDict):
     """
     Helper function that transforms a dictionary of parameter -> value
