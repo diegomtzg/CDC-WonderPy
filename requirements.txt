@@ -1,4 +1,5 @@
-lxml
-beautifulsoup4
 requests
 pandas
+beautifulsoup4
+lxml
+rapidfuzz
