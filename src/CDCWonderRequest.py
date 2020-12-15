@@ -238,55 +238,6 @@ class CDCWonderRequest():
 
         return self
 
-    #########################################
-    #### Location
-    #########################################
-    def region(self, *args):
-        """ 
-        Pass in a non-zero number of locations of the same location type
-        :param args:        the location (States/CensusRegion/HHSRegion) options that
-                            the user wants to filter by. Note that all provided args
-                            must be of the same location type.
-        :returns:           self
-        :raises ValueError: if at least one location is not provided
-        :raises TypeError:  if arguments provided are not of the same location type.
-        """
-        if (len(args) == 0):
-            raise ValueError("Method expects at least one location argument.")
-        typeOfArgs = type(args[0])
-        if (typeOfArgs not in [States, CensusRegion, HHSRegion]):
-            raise TypeError("Provided arguments are not any of type Stages, CensusRegion or HHSRegion.")
-
-        locations = set()
-        for arg in args:
-            if (type(arg) != typeOfArgs):
-                raise TypeError("Mismatched location types provided. " + str(arg) + " doesn't match type of previous arguments. Please provide arguments of the same location type. For reference, check CDCWonderEnums.py")
-            locations.add(arg.value) 
-        self._f_parameters["F_D76.V9"] = list(locations)
-        self._i_parameters["I_D76.V9"] = list(locations)
-        return self
-
-    def urbanization(self, urbanization_year, *args):
-        """
-        Pass in a non-zero number of locations of the same location type
-        :param urbanization_year: the urbanization year to filter by
-        :param args: the urbanization categories that the user wants to filter by
-        :returns: self
-        :raises: ValueError if at least one urbanization category isn't provided
-        """
-        if (len(args) == 0):
-            raise ValueError("Method expects at least one urbanization argument.")
-
-        categories = set()
-        for arg in args:
-           categories.add(arg.value)
-        self._o_parameters["O_urban"] = urbanization_year.value
-        if urbanization_year == urbanization_year.Year2013:
-            self._v_parameters["V_D76.V19"] = list(categories)
-        else:
-            self._v_parameters["V_D76.V11"] = list(categories)
-        return self
-
 
     #########################################
     #### Demographic
