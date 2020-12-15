@@ -8,14 +8,29 @@ from CDCWonderEnums import *
 from Dates import *
 from utils import dictToXML
 
+
 class CDCWonderRequest():
     """
-    * A wrapper around the CDC Wonder REST API, specific to the Compressed Morality Dataset (D76).
+    * A wrapper around the CDC Wonder REST API, specific to the Underlying Cause of Death Dataset (D76).
     * This API provides similar access to the database, but removes the need to specify unnecessary
     * parameters, renames them so that they're easier to use and provides a utility class called
     * CDCWonderResponse that contains useful data transformation methods to analyze the data in
     * different formats.
+    *
     * All of the methods that modify the input parameters return self so they can be chained together.
+    *
+    * * Default modifiable parameters *
+    * - Group by: Year
+    * - Demographics: All ages, genders, races and hispanic origins.
+    * - Years and Months: All (1999 through 2018)
+    * - Weekdays: All
+    * - Autopsy: All
+    * - Place of Death: All
+    * - Cause of Death: All ICD-10 Codes
+
+    * * Default values that cannot be changed through this API *
+    * - Measures: Deaths, Population, Crude Rate (changing this is out of scope for this project)
+    * - Location/Urbanization: All (cannot be changed, see limitations above)
     *
     *******************************************************************************************
     * LIMITATION: ASSURANCE OF CONFIDENTIALITY
@@ -56,20 +71,7 @@ class CDCWonderRequest():
     def __init__(self):
         """
         Constructor method that initializes this request instance to the same default values as
-        the API's web GUI on https://wonder.cdc.gov/ucd-icd10.html
-
-        * Default modifiable parameters *
-        - Group by: Year
-        - Demographics: All ages, genders, races and hispanic origins.
-        - Years and Months: All (1999 through 2018)
-        - Weekdays: All
-        - Autopsy: All
-        - Place of Death: All
-        - Cause of Death: All ICD-10 Codes
-
-        * Default values that cannot be changed through this API *
-        - Measures: Deaths, Population, Crude Rate (changing this is out of scope for this project)
-        - Location/Urbanization: All (cannot be changed, see above)
+        the API's web GUI on https://wonder.cdc.gov/ucd-icd10.html (see class documentation).
         """
 
         # Group-by parameters.
@@ -182,7 +184,7 @@ class CDCWonderRequest():
         }
 
 
-    def send(self) -> "CDCWonderResponse":
+    def send(self) -> 'CDCWonderResponse':
         """
         Sends this request to the CDC Wonder API endpoint and returns the response as a CDCWonderResponse.
         :returns CDCWonderResponse: represents the response of the server
@@ -219,7 +221,7 @@ class CDCWonderRequest():
     #########################################
     #### Organize Table Layout
     #########################################
-    def group_by(self, *args):
+    def group_by(self, *args) -> 'CDCWonderRequest':
         """
         Groups API requested results by one to five filters ranging from demographics to
         dates to cause of death. Note that filtering by Months will cause Population and
@@ -258,12 +260,13 @@ class CDCWonderRequest():
     #########################################
     #### Demographic
     #########################################
-    def age_groups(self, *args):
+    def age_groups(self, *args) -> 'CDCWonderRequest':
         """
         """
         raise NotImplementedError
 
-    def gender(self, *args):
+
+    def gender(self, *args) -> 'CDCWonderRequest':
         """
         Specify which Gender option to filter by.
         :param gender:      the gender option that the user wants to filter by
@@ -284,7 +287,8 @@ class CDCWonderRequest():
         self._v_parameters["V_D76.V7"] = list(gender_options)
         return self
 
-    def race(self, *args):
+
+    def race(self, *args) -> 'CDCWonderRequest':
         """
         Specify the Race options to filter by.
         :param args:         the race options that the user wants to filter by
@@ -304,7 +308,8 @@ class CDCWonderRequest():
         self._v_parameters["V_D76.V8"] = list(races)
         return self
 
-    def hispanic_origin(self, *args):
+
+    def hispanic_origin(self, *args) -> 'CDCWonderRequest':
         """
         Specify the Hispanic origin options to filter by.
         :param args:        the HispanicOrigin options that the user wants to filter by
@@ -327,10 +332,11 @@ class CDCWonderRequest():
         self._v_parameters["V_D76.V17"] = list(hispanic_origins)
         return self
 
+
     #########################################
     #### Chronology
     #########################################
-    def dates(self, *args):
+    def dates(self, *args) -> 'CDCWonderRequest':
         """
         Specify the dates to filter by. See the Dates class for more information on
         how dates can be specified as either single Year/Month or a range.
@@ -373,7 +379,7 @@ class CDCWonderRequest():
         return self
 
 
-    def weekday(self, *args):
+    def weekday(self, *args) -> 'CDCWonderRequest':
         """
         Specify weekday options to filter by. Default is *All*.
         :param args:        the Weekday options that the user wants to filter by
@@ -394,10 +400,11 @@ class CDCWonderRequest():
         self._v_parameters["V_D76.V24"] = list(weekdays)
         return self
 
+
     #########################################
     #### Miscellaneous
     #########################################
-    def place_of_death(self, *args):
+    def place_of_death(self, *args) -> 'CDCWonderRequest':
         """
         Specify the Place of Death options to filter by. Default is *All*.
         :param args:        the PlaceOfDeath options that the user wants to filter by
@@ -419,7 +426,7 @@ class CDCWonderRequest():
         return self
 
 
-    def autopsy(self, *args):
+    def autopsy(self, *args) -> 'CDCWonderRequest':
         """
         Specify the Autopsy options to filter by. Default is *All*.
         :param args: the Autopsy options that the user wants to filter by
@@ -439,7 +446,8 @@ class CDCWonderRequest():
         self._v_parameters["V_D76.V20"] = list(autopsy_options)
         return self
 
-    def cause_of_death(self, *args):
+
+    def cause_of_death(self, *args) -> 'CDCWonderRequest':
         """
         """
         # TODO(@joel)
