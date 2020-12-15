@@ -201,8 +201,27 @@ class CDCWonderRequest():
     #### Organize Table Layout
     #########################################
     def grouping(self, *args):
-        # TODO(@ike)
-        raise NotImplementedError
+        """
+        """
+        if (len(args) == 0):
+            raise ValueError("Method expects at least one grouping argument.")
+        elif (len(args) > 5):
+            raise ValueError("Method expects at most 5 grouping arguments.")
+        
+        groupings = list()
+        for grouping in args:
+            if (type(grouping != Grouping)):
+                raise TypeError("Provided argument is not of type Grouping.")
+            elif grouping.value not in groupings:
+                groupings.add(grouping.value)
+        
+        # Reset b_parameters
+        for b_param_key in self._b_parameters:
+            self._b_parameters[b_param_key] = "*None*"
+
+        for i, grouping in groupings.enumerate():
+            b_param_key = "B_" + str(i+1)
+            self._b_parameters[b_param_key] = grouping
 
     #########################################
     #### Location
@@ -214,14 +233,14 @@ class CDCWonderRequest():
         :param args: the location (States/CensusRegion/HHSRegion) options that the user wants to filter by
                     Note that all provided args must be of the same location type.
         :returns: self
-        :raises: ValueError if at least one location isn't provided
-                 TypeError if arguments provided aren't of the same location type.
+        :raises: ValueError if at least one location is not provided
+                 TypeError if arguments provided are not of the same location type.
         """
         if (len(args) == 0):
             raise ValueError("Method expects at least one location argument.")
         typeOfArgs = type(args[0])
         if (typeOfArgs not in [States, CensusRegion, HHSRegion]):
-            raise TypeError("Provided arguments aren't any of type Stages, CensusRegion or HHSRegion")
+            raise TypeError("Provided arguments are not any of type Stages, CensusRegion or HHSRegion.")
 
         locations = set()
         for arg in args:
@@ -458,6 +477,8 @@ if __name__ == '__main__':
 
     # TODO: Passing year here looks confusing (how to tell it apart from other two args? maybe set urbanization year with separate method?)
     # req.urbanization(UrbanizationYear.Year2013, UrbanizationCategory.LargeCentralMetro, UrbanizationCategory.LargeFringeMetro)
+
+    req.grouping(Grouping.State)
 
     response = req.send()
     print(response.as_dataframe())

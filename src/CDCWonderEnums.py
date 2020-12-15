@@ -1,6 +1,47 @@
 from enum import Enum
 
 #########################################
+#### Grouping Enums
+#########################################
+
+class Grouping(Enum):
+    # Location
+    CensusRegion = "D76.V10-level1"
+    CensusDivision = "D76.V10-level2"
+    HHSRegion = "D76.V27-level1"
+    State = "D76.V9-level1"
+    County = "D76.V9-level2"
+    Urbanization2013 = "D76.V19"
+    Urbanization2006 = "D76.V11"
+
+    # Demographics
+    AgeGroups = "D76.V5"
+    Gender = "D76.V7"
+    HispanicOrigin = "D76.V17"
+    Race = "D76.V8"
+
+    # Year and Month
+    Year = "D76.V1-level1"
+    Month = "D76.V1-level2"
+
+    # Weekday, Autopsy, Place of Death
+    Weekday = "D76.V24"
+    Autopsy = "D76.V20"
+    PlaceOfDeath = "D76.V21"
+
+    # Cause of Death
+    LeadingCausesOfDeath = "D76.V28"
+    LeadingCausesOfInfantDeath = "D76.V29"
+    ICDChapter = "D76.V2-level1"
+    ICDSubChapter = "D76.V2-level2"
+    CauseOfDeath = "D76.V2-level3"
+    ICD10CauseList113 = "D76.V4"
+    # ICD10InfantCauseList130 = "D76.V12"
+    InjuryIntent = "D76.V22"
+    InjuryMechanismAndAllOtherLeadingCauses = "D76.V23"
+    DrugOrAlcoholInducedCauses = "D76.V25"
+
+#########################################
 #### Region Enums
 #########################################
 class States(Enum):
