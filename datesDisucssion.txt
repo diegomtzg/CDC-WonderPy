@@ -2,3 +2,12 @@ set_date(1993)
 set_date_range(1993, 1995)
 set_date_ranges((1992, 1995), (1997, 2001))
 set_dates(1992, 1995, 2003)
+
+set_date(DateRange("1997"), DateRange(("1993", "1998")))
+DateRange("1997")
+DateRange(("1993", "1998"))
+DateRange("5/1999")
+
+AgeRange(25, 32)
+
+GroupBy.TEN_YEAR_GROUP

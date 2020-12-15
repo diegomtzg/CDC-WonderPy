@@ -3,9 +3,10 @@ import bs4 as bs
 from requests import RequestException
 
 from CDCWonderResponse import CDCWonderResponse
-from utils import dictToXML
+from utils import dictToXML, datesToIParam
 from CDCWonderEnums import *
 from ExceptionMessages import *
+from Dates import *
 
 class CDCWonderRequest():
     """
@@ -55,7 +56,7 @@ class CDCWonderRequest():
 
         # Group-by parameters.
         self._b_parameters = {
-            "B_1": "D76.V1-level1",  # year
+            "B_1": "D76.V1-level2",  # year
             "B_2": "*None*",
             "B_3": "*None*",
             "B_4": "*None*",
@@ -334,8 +335,38 @@ class CDCWonderRequest():
     def dates(self, *args):
         """
         """
-        # TODO(@joel)
-        raise NotImplementedError
+        if len(args) == 0:
+            raise ValueError("Method expects at least one value speciying the desired dates")
+
+        total = Dates()
+        for arg in args:
+            if not isinstance(arg, Dates):
+                raise TypeError("Provided arguments are not Dates objects. Please create Dates objects to set the year(s) and month(s) you would like to retrieve data from.")
+            if any(e.is_before(Year(1999)) or e.is_after(Year(2018)) for e in arg.get_months()):
+                raise ValueError("All dates must be between 1999 and 2018")
+            total = Dates.union(total, arg)
+
+        all_months = sorted(total.get_months())
+        curr_year = None
+        curr_year_set = set()
+        date_params = set()
+        for month in all_months:
+            if curr_year != month.get_year():
+                date_params.update(curr_year_set)
+                curr_year_set = set()
+                curr_year = month.get_year()
+            
+            curr_year_set.add(month)
+            
+            if len(curr_year_set) == CalendarMonth.NUM_MONTHS:
+                date_params.add(Year(curr_year))
+                curr_year_set = set()
+
+        date_params.update(curr_year_set)
+        date_params_list = [str(e) for e in date_params]
+        self._f_parameters["F_D76.V1"] = sorted(date_params_list)
+        return self
+
 
     def weekday(self, *args):
         """
@@ -415,6 +446,9 @@ class CDCWonderRequest():
 # Sample code
 if __name__ == '__main__':
     req = CDCWonderRequest()
+    #req.dates(Dates.of(CalendarMonth(4, 2005)))
+    #req.dates(Dates.range(Year(2001), Year(2003)))
+    req.dates(Dates.range(Year(2001), Year(2003)), Dates.of(CalendarMonth(4, 2005)), Dates.range(CalendarMonth(6, 2003), CalendarMonth(9, 2004)))
     # req.hispanic_origin(HispanicOrigin.HispanicOrLatino, HispanicOrigin.NotHispanicOrLatino)
     # req.gender(Gender.Female).race(Race.Asian)
     # req.weekday(Weekday.Sun, Weekday.Mon, Weekday.Thu)
