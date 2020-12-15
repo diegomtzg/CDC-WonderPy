@@ -5,7 +5,6 @@ import bs4 as bs
 from WonderResponse import WonderResponse
 from WonderEnums import *
 from Dates import *
-from utils import dictToXML
 
 
 class WonderRequest():
@@ -15,6 +14,9 @@ class WonderRequest():
     * parameters, renames them so that they're easier to use and provides a utility class called
     * WonderResponse that contains useful data transformation methods to analyze the data in
     * different formats.
+    *
+    * NOTE: By using this API, users implicitly signify that they will abide by the terms of data
+    * use stated here: https://wonder.cdc.gov/ucd-icd10.html
     *
     * All of the methods that modify the input parameters return self so they can be chained together.
     *
@@ -190,15 +192,15 @@ class WonderRequest():
         :raises RequestException: when the server responds with an error (see exception message for details).
         """
         request_xml = "<request-parameters>\n"
-        request_xml += dictToXML({"accept_datause_restrictions": "true"})
-        request_xml += dictToXML(self._b_parameters)
-        request_xml += dictToXML(self._m_parameters)
-        request_xml += dictToXML(self._f_parameters)
-        request_xml += dictToXML(self._i_parameters)
-        request_xml += dictToXML(self._v_parameters)
-        request_xml += dictToXML(self._o_parameters)
-        request_xml += dictToXML(self._vm_parameters)
-        request_xml += dictToXML(self._misc_parameters)
+        request_xml += self._dictToXML({"accept_datause_restrictions": "true"})
+        request_xml += self._dictToXML(self._b_parameters)
+        request_xml += self._dictToXML(self._m_parameters)
+        request_xml += self._dictToXML(self._f_parameters)
+        request_xml += self._dictToXML(self._i_parameters)
+        request_xml += self._dictToXML(self._v_parameters)
+        request_xml += self._dictToXML(self._o_parameters)
+        request_xml += self._dictToXML(self._vm_parameters)
+        request_xml += self._dictToXML(self._misc_parameters)
         request_xml += "</request-parameters>"
 
         url = "https://wonder.cdc.gov/controller/datarequest/D76"
@@ -451,6 +453,31 @@ class WonderRequest():
         """
         # TODO(@joel)
         raise NotImplementedError
+
+    ##################################
+    # Private internal helper methods
+    ##################################
+    @staticmethod
+    def _dictToXML(parameterDict):
+        """
+        Private helper function that transforms a dictionary single parameter -> value
+        mappings to an equivalent XML string representation.
+        """
+        parameterString = ""
+        for key in parameterDict:
+            parameterString += "<parameter>\n"
+            parameterString += "<name>" + key + "</name>\n"
+
+            # If value is a list, concatenate all values
+            if isinstance(parameterDict[key], list) or isinstance(parameterDict[key], tuple):
+                for value in parameterDict[key]:
+                    parameterString += "<value>" + value + "</value>\n"
+            else:
+                parameterString += "<value>" + parameterDict[key] + "</value>\n"
+
+            parameterString += "</parameter>\n"
+
+        return parameterString
 
 
 # Sample code
