@@ -261,10 +261,19 @@ class WonderRequest():
     #########################################
     #### Demographic
     #########################################
-    def age_groups(self, *args) -> 'WonderRequest':
+    def age_groups(self, age_grouping: AgeGroup, *args) -> 'WonderRequest':
         """
         """
-        raise NotImplementedError
+        if (len(args) == 0):
+            raise ValueError("Method expects at least one Age Group value.")
+        elif (type(age_grouping) != AgeGroup):
+            raise TypeError("Parameter age_grouping not of type AgeGroup.")
+
+        age_ranges = []
+        for arg in args:
+            pass
+        
+        return self
 
 
     def gender(self, *args) -> 'WonderRequest':
