@@ -7,6 +7,9 @@ class CDCWonderResponse():
         self._xml = xml
         self._2d_list = None
 
+    def as_xml(self) -> typing.String:
+        return self._xml
+
     def as_dataframe(self) -> pd.DataFrame:
         """
         """
