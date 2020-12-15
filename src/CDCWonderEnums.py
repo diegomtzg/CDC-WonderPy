@@ -5,14 +5,14 @@ from enum import Enum
 #########################################
 
 class Grouping(Enum):
-    # Location
-    CensusRegion = "D76.V10-level1"
-    CensusDivision = "D76.V10-level2"
-    HHSRegion = "D76.V27-level1"
-    State = "D76.V9-level1"
-    County = "D76.V9-level2"
-    Urbanization2013 = "D76.V19"
-    Urbanization2006 = "D76.V11"
+    # # Location
+    # CensusRegion = "D76.V10-level1"
+    # CensusDivision = "D76.V10-level2"
+    # HHSRegion = "D76.V27-level1"
+    # State = "D76.V9-level1"
+    # County = "D76.V9-level2"
+    # Urbanization2013 = "D76.V19"
+    # Urbanization2006 = "D76.V11"
 
     # Demographics
     AgeGroups = "D76.V5"

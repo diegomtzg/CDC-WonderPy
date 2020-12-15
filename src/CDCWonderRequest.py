@@ -3,10 +3,10 @@ import bs4 as bs
 from requests import RequestException
 
 from CDCWonderResponse import CDCWonderResponse
-from utils import dictToXML
 from CDCWonderEnums import *
 from ExceptionMessages import *
 from Dates import *
+from utils import dictToXML
 
 class CDCWonderRequest():
     """
@@ -62,6 +62,9 @@ class CDCWonderRequest():
             "B_4": "*None*",
             "B_5": "*None*"
         }
+
+        # Group-by column names. For the purpose of formatting the API Response table.
+        self._group_by_column_names = ["Year"]
 
         # Measures to return. Deaths, Population and Crude Rate are included by default (but must still be included).
         self._m_parameters = {
@@ -134,7 +137,7 @@ class CDCWonderRequest():
             "O_location": "D76.V9",  # select location variable to use (states here, but could be census or hhs regions)
             "O_precision": "9",  # decimal places (max)
             "O_rate_per": "100000",  # rates calculated per X persons
-            "O_show_totals": "true",  # Show totals
+            "O_show_totals": "false",  # Do now show totals
             "O_show_zeros": "true",  # Show zero values
             "O_timeout": "600",
             "O_title": "CDCWonderAPI Request",
@@ -194,14 +197,22 @@ class CDCWonderRequest():
 
             raise RequestException("The server returned an error: " + exception_message)
 
-        return CDCWonderResponse(response.text)
+        return CDCWonderResponse(response.text, self._group_by_column_names)
 
 
     #########################################
     #### Organize Table Layout
     #########################################
-    def grouping(self, *args):
+    def group_by(self, *args):
         """
+        Groups API requested results by one to five filters ranging from demographics to
+        dates to cause of death. Note that filtering by Months will cause Population and
+        Crude Rate / 100k columns to be marked "Not Applicable".
+
+        @param  *args:      Table groupings by which the user can format the requested data.
+        @raises ValueError: If user inputs less than one or greater than 5 arguments.
+        @raises TypeError:  If inputted arguments are not all of type Grouping.
+        @returns:           Same CDCWonderRequest object.
         """
         if (len(args) == 0):
             raise ValueError("Method expects at least one grouping argument.")
@@ -209,19 +220,23 @@ class CDCWonderRequest():
             raise ValueError("Method expects at most 5 grouping arguments.")
         
         groupings = list()
-        for grouping in args:
-            if (type(grouping != Grouping)):
+        for arg in args:
+            if (type(arg) != Grouping):
                 raise TypeError("Provided argument is not of type Grouping.")
-            elif grouping.value not in groupings:
-                groupings.add(grouping.value)
+            elif arg.value not in groupings:
+                groupings.append(arg)
         
-        # Reset b_parameters
+        # Reset b_parameters and group_by_column_names
+        self._group_by_column_names = []
         for b_param_key in self._b_parameters:
             self._b_parameters[b_param_key] = "*None*"
 
-        for i, grouping in groupings.enumerate():
+        for i, grouping in enumerate(groupings):
             b_param_key = "B_" + str(i+1)
-            self._b_parameters[b_param_key] = grouping
+            self._b_parameters[b_param_key] = grouping.value
+            self._group_by_column_names.append(grouping.name)
+
+        return self
 
     #########################################
     #### Location
@@ -466,8 +481,8 @@ class CDCWonderRequest():
 if __name__ == '__main__':
     req = CDCWonderRequest()
     #req.dates(Dates.of(CalendarMonth(4, 2005)))
-    #req.dates(Dates.range(Year(2001), Year(2003)))
-    req.dates(Dates.range(Year(2001), Year(2003)), Dates.of(CalendarMonth(4, 2005)), Dates.range(CalendarMonth(6, 2003), CalendarMonth(9, 2004)))
+    req.dates(Dates.range(Year(2001), Year(2003)))
+    # req.dates(Dates.range(Year(2001), Year(2003)), Dates.of(CalendarMonth(4, 2005)), Dates.range(CalendarMonth(6, 2003), CalendarMonth(9, 2004)))
     # req.hispanic_origin(HispanicOrigin.HispanicOrLatino, HispanicOrigin.NotHispanicOrLatino)
     # req.gender(Gender.Female).race(Race.Asian)
     # req.weekday(Weekday.Sun, Weekday.Mon, Weekday.Thu)
@@ -478,7 +493,7 @@ if __name__ == '__main__':
     # TODO: Passing year here looks confusing (how to tell it apart from other two args? maybe set urbanization year with separate method?)
     # req.urbanization(UrbanizationYear.Year2013, UrbanizationCategory.LargeCentralMetro, UrbanizationCategory.LargeFringeMetro)
 
-    req.grouping(Grouping.State)
+    req.group_by(Grouping.Gender, Grouping.Year)
 
     response = req.send()
     print(response.as_dataframe())

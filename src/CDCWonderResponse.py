@@ -1,32 +1,39 @@
 import typing
+import copy
 import bs4 as bs
 import pandas as pd
 
 class CDCWonderResponse():
-    def __init__(self, xml):
+    def __init__(self, xml, groupings):
         self._xml = xml
+        self._groupings = groupings
         self._2d_list = None
 
     def as_xml(self) -> str:
+        """
+        Return the response data as an XML-formatted String.
+
+        @returns:   String representation of Response in XML format.
+        """
         return self._xml
 
     def as_dataframe(self) -> pd.DataFrame:
         """
+        Returns the response data as a formatted Pandas Dataframe with
+        column labels corresponding to group_by settings in the Request.
+
+        @returns:   Pandas Dataframe containing Response data.
         """
         if self._2d_list == None:
             self.as_2d_list()
 
-        column_labels = ["Year", "Deaths", "Population", "Crude Rate Per 100,000"]
-
-        # # TODO: Expand to allow for additional table categories (first determine if within scope)
-        # column_labels = ["Year", "Race", "Deaths", "Population", "Crude Rate", "Age-Adjusted Rate", "Age-Adjusted Rate Standard Error"]
-        # if len(self._2d_list[0]) == 7:
-        #     column_labels.insert(1, "Month")
+        column_labels = copy.deepcopy(self._groupings) + ["Deaths", "Population", "Crude Rate Per 100,000"]
         
         return pd.DataFrame(data=self._2d_list, columns=column_labels)
 
     def as_2d_list(self) -> typing.List[typing.List]:
-        """ This function grabs the root of the XML document and iterates over
+        """
+        This function grabs the root of the XML document and iterates over
         the 'r' (row) and 'c' (column) tags of the data-table
         Rows with a 'v' attribute contain a numerical value.
         Rows with a 'l attribute contain a text label and may contain an
@@ -47,7 +54,7 @@ class CDCWonderResponse():
         row_number = 0
         rows = root.find_all("r")
         
-        for row in rows[:-1]:
+        for row in rows:
             if row_number >= len(all_records):
                 all_records.append([])
                 
