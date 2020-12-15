@@ -2,19 +2,18 @@ import requests
 from requests import RequestException
 import bs4 as bs
 
-from Exceptions import CDCWonderExceptions
-from CDCWonderResponse import CDCWonderResponse
-from CDCWonderEnums import *
+from WonderResponse import WonderResponse
+from WonderEnums import *
 from Dates import *
 from utils import dictToXML
 
 
-class CDCWonderRequest():
+class WonderRequest():
     """
     * A wrapper around the CDC Wonder REST API, specific to the Underlying Cause of Death Dataset (D76).
     * This API provides similar access to the database, but removes the need to specify unnecessary
     * parameters, renames them so that they're easier to use and provides a utility class called
-    * CDCWonderResponse that contains useful data transformation methods to analyze the data in
+    * WonderResponse that contains useful data transformation methods to analyze the data in
     * different formats.
     *
     * All of the methods that modify the input parameters return self so they can be chained together.
@@ -184,10 +183,10 @@ class CDCWonderRequest():
         }
 
 
-    def send(self) -> 'CDCWonderResponse':
+    def send(self) -> 'WonderResponse':
         """
-        Sends this request to the CDC Wonder API endpoint and returns the response as a CDCWonderResponse.
-        :returns CDCWonderResponse: represents the response of the server
+        Sends this request to the CDC Wonder API endpoint and returns the response as a WonderResponse.
+        :returns WonderResponse: represents the response of the server
         :raises RequestException: when the server responds with an error (see exception message for details).
         """
         request_xml = "<request-parameters>\n"
@@ -215,13 +214,13 @@ class CDCWonderRequest():
 
             raise RequestException("The server returned an error: " + exception_message)
 
-        return CDCWonderResponse(response.text, self._group_by_column_names)
+        return WonderResponse(response.text, self._group_by_column_names)
 
 
     #########################################
     #### Organize Table Layout
     #########################################
-    def group_by(self, *args) -> 'CDCWonderRequest':
+    def group_by(self, *args) -> 'WonderRequest':
         """
         Groups API requested results by one to five filters ranging from demographics to
         dates to cause of death. Note that filtering by Months will cause Population and
@@ -260,13 +259,13 @@ class CDCWonderRequest():
     #########################################
     #### Demographic
     #########################################
-    def age_groups(self, *args) -> 'CDCWonderRequest':
+    def age_groups(self, *args) -> 'WonderRequest':
         """
         """
         raise NotImplementedError
 
 
-    def gender(self, *args) -> 'CDCWonderRequest':
+    def gender(self, *args) -> 'WonderRequest':
         """
         Specify which Gender option to filter by.
         :param gender:      the gender option that the user wants to filter by
@@ -283,12 +282,12 @@ class CDCWonderRequest():
                 raise TypeError("Provided arguments aren't of Gender enum type. Please provide arguments of the right type. For reference, check CDCWonderEnums.py")
             gender_options.add(arg.value)
         if (len(gender_options) > 1 and Gender.All in gender_options):
-            raise ValueError(CDCWonderExceptions.gender_exception)
+            raise ValueError("Gender has both 'All Genders' and other options selected. Please select either 'All' or specific options.")
         self._v_parameters["V_D76.V7"] = list(gender_options)
         return self
 
 
-    def race(self, *args) -> 'CDCWonderRequest':
+    def race(self, *args) -> 'WonderRequest':
         """
         Specify the Race options to filter by.
         :param args:         the race options that the user wants to filter by
@@ -304,12 +303,12 @@ class CDCWonderRequest():
                 raise TypeError("Provided arguments aren't of race enum type. Please provide arguments of the right type. For reference, check CDCWonderEnums.py")
             races.add(arg.value)
         if (len(races) > 1 and Race.All in races):
-            raise ValueError(CDCWonderExceptions.race_exception)
+            raise ValueError("Race has both 'All' and other options selected. Please select either 'All' or specific options.")
         self._v_parameters["V_D76.V8"] = list(races)
         return self
 
 
-    def hispanic_origin(self, *args) -> 'CDCWonderRequest':
+    def hispanic_origin(self, *args) -> 'WonderRequest':
         """
         Specify the Hispanic origin options to filter by.
         :param args:        the HispanicOrigin options that the user wants to filter by
@@ -326,9 +325,9 @@ class CDCWonderRequest():
                 raise TypeError("Provided arguments aren't of Hispanic Origin enum type. Please provide arguments of the right type. For reference, check CDCWonderEnums.py")
             hispanic_origins.add(arg.value)
         if (len(hispanic_origins) > 1 and HispanicOrigin.All in hispanic_origins):
-            raise ValueError(CDCWonderExceptions.hispanic_origin_all_exception)
+            raise ValueError("Hispanic Origin has both 'All' and other options selected. Please select either 'All' or specific options.")
         if (len(hispanic_origins) > 1 and HispanicOrigin.NotStated in hispanic_origins):
-            raise ValueError(CDCWonderExceptions.hispanic_origin_ns_exception)
+            raise ValueError("Hispanic Origin has both 'All' and other options selected. Please select either 'All' or specific options.")
         self._v_parameters["V_D76.V17"] = list(hispanic_origins)
         return self
 
@@ -336,7 +335,7 @@ class CDCWonderRequest():
     #########################################
     #### Chronology
     #########################################
-    def dates(self, *args) -> 'CDCWonderRequest':
+    def dates(self, *args) -> 'WonderRequest':
         """
         Specify the dates to filter by. See the Dates class for more information on
         how dates can be specified as either single Year/Month or a range.
@@ -379,7 +378,7 @@ class CDCWonderRequest():
         return self
 
 
-    def weekday(self, *args) -> 'CDCWonderRequest':
+    def weekday(self, *args) -> 'WonderRequest':
         """
         Specify weekday options to filter by. Default is *All*.
         :param args:        the Weekday options that the user wants to filter by
@@ -396,7 +395,7 @@ class CDCWonderRequest():
                 raise TypeError("Provided arguments aren't of Weekday enum type. Please provide arguments of the right type. For reference, check CDCWonderEnums.py")
             weekdays.add(arg.value)
         if (len(weekdays) > 1 and Weekday.All in weekdays):
-            raise ValueError(CDCWonderExceptions.weekday_exception)
+            raise ValueError("PlaceOfDeath has both 'All' and other options selected. Please select either 'All' or specific options.")
         self._v_parameters["V_D76.V24"] = list(weekdays)
         return self
 
@@ -404,7 +403,7 @@ class CDCWonderRequest():
     #########################################
     #### Miscellaneous
     #########################################
-    def place_of_death(self, *args) -> 'CDCWonderRequest':
+    def place_of_death(self, *args) -> 'WonderRequest':
         """
         Specify the Place of Death options to filter by. Default is *All*.
         :param args:        the PlaceOfDeath options that the user wants to filter by
@@ -421,12 +420,12 @@ class CDCWonderRequest():
                 raise TypeError("Provided arguments aren't of PlaceOfDeath enum type. Please provide arguments of the right type. For reference, check CDCWonderEnums.py")
             place_of_death_options.add(arg.value)
         if (len(place_of_death_options) > 1 and PlaceOfDeath.All in place_of_death_options):
-            raise ValueError(CDCWonderExceptions.place_of_death_exception)
+            raise ValueError("PlaceOfDeath has both 'All' and other options selected. Please select either 'All' or specific options.")
         self._v_parameters["V_D76.V21"] = list(place_of_death_options)
         return self
 
 
-    def autopsy(self, *args) -> 'CDCWonderRequest':
+    def autopsy(self, *args) -> 'WonderRequest':
         """
         Specify the Autopsy options to filter by. Default is *All*.
         :param args: the Autopsy options that the user wants to filter by
@@ -442,12 +441,12 @@ class CDCWonderRequest():
                 raise TypeError("Provided arguments aren't of Autopsy enum type. Please provide arguments of the right type. For reference, check CDCWonderEnums.py")
             autopsy_options.add(arg.value)
         if (len(autopsy_options) > 1 and Autopsy.All in autopsy_options):
-            raise ValueError(CDCWonderExceptions.autopsy_exception)
+            raise ValueError("Autopsy has both 'All' and other options selected. Please select either 'All' or specific options.")
         self._v_parameters["V_D76.V20"] = list(autopsy_options)
         return self
 
 
-    def cause_of_death(self, *args) -> 'CDCWonderRequest':
+    def cause_of_death(self, *args) -> 'WonderRequest':
         """
         """
         # TODO(@joel)
@@ -456,7 +455,7 @@ class CDCWonderRequest():
 
 # Sample code
 if __name__ == '__main__':
-    req = CDCWonderRequest()
+    req = WonderRequest()
     # req.dates(Dates.range(Year(2001), Year(2003)), Dates.single(YearAndMonth(2005, 4)), Dates.range(YearAndMonth(2003, 6), YearAndMonth(2004, 9)))
     # req.hispanic_origin(HispanicOrigin.HispanicOrLatino, HispanicOrigin.NotHispanicOrLatino)
     # req.gender(Gender.Female).race(Race.Asian)

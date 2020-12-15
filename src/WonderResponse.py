@@ -3,7 +3,7 @@ import copy
 import bs4 as bs
 import pandas as pd
 
-class CDCWonderResponse():
+class WonderResponse():
     def __init__(self, xml, groupings):
         self._xml = xml
         self._groupings = groupings
@@ -13,7 +13,7 @@ class CDCWonderResponse():
         """
         Return the response data as an XML-formatted String.
 
-        @returns:   String representation single Response in XML format.
+        :returns:   String representation single Response in XML format.
         """
         return self._xml
 
@@ -22,7 +22,7 @@ class CDCWonderResponse():
         Returns the response data as a formatted Pandas Dataframe with
         column labels corresponding to group_by settings in the Request.
 
-        @returns:   Pandas Dataframe containing Response data.
+        :returns:   Pandas Dataframe containing Response data.
         """
         if self._2d_list == None:
             self.as_2d_list()
@@ -41,9 +41,7 @@ class CDCWonderResponse():
         should be added. If present, that label will be added to the following
         rows single the data table.
 
-        TODO: CITE GITHUB MAN
-
-        @returns:   A two-dimensional array representing the response data.
+        :returns List[List]:   A two-dimensional array representing the response data.
         """
     
         if self._2d_list != None:
