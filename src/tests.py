@@ -4,19 +4,19 @@ from WonderEnums import *
 import bs4 as bs
 import pandas as pd
 
-
-
 #Testing parsing of response
-def test_as_2d_list():
-    pass
-
-def test_as_dataframe():
-    pass
-
+class WonderResponseTest():
+    
+    @classmethod
+    def test_as_2d_list(cls):
+        pass
+    
+    @classmethod
+    def test_as_dataframe(cls):
+        pass
 
 #End to end testing
-
-class EndToEndTesting():
+class EndToEndTests():
     @classmethod
     def _float_is_almost_equal(cls, a, b, epsilon=0.1):
         return abs(a-b) <= epsilon
@@ -87,5 +87,5 @@ class EndToEndTesting():
         assert(res2DList[2][3] == not_stated_crude_rate_gui)   
 
 if __name__ == '__main__':
-    EndToEndTesting.test1()
-    EndToEndTesting.test2()
+    EndToEndTests.test1()
+    EndToEndTests.test2()
