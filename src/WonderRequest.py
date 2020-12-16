@@ -5,6 +5,8 @@ import bs4 as bs
 from WonderResponse import WonderResponse
 from WonderEnums import *
 from Dates import *
+from Ages import *
+from utils import dictToXML
 
 
 class WonderRequest():
@@ -84,9 +86,6 @@ class WonderRequest():
             "B_5": "*None*"
         }
 
-        # Group-by column names. For the purpose of formatting the API Response table.
-        self._group_by_column_names = ["Year"]
-
         # Measures to return. Deaths, Population and Crude Rate are included by default (but must still be included).
         self._m_parameters = {
             "M_1": "D76.M1",   # Deaths, must be included
@@ -152,7 +151,8 @@ class WonderRequest():
             "O_V27_fmode": "freg",  # Use regular finder and ignore v parameter value
             "O_aar": "aar_none",  # age-adjusted rates
             "O_aar_pop": "0000",  # population selection for age-adjusted rates
-            "O_age": "D76.V5",  # 10-year age groups (could be ten-year, five-year, single-year, infant groups)
+            # "O_age": "D76.V5",  # 10-year age groups (could be ten-year, five-year, single-year, infant groups)
+            "O_age": "D76.V52",  # Single-year age groups (could be ten-year, five-year, single-year, infant groups)
             "O_javascript": "on",  # Set to on by default
             "O_location": "D76.V9",  # select location variable to use (states here, but could be census or hhs regions)
             "O_precision": "9",  # decimal places (max)
@@ -183,6 +183,12 @@ class WonderRequest():
             "finder-stage-D76.V9": "codeset",
             "stage": "request"
         }
+
+        # Group-by column names. For the purpose of formatting the API Response table.
+        self._group_by_column_names = ["Year"]
+
+        # Ages to filter query by, if any.
+        self.ages = None
 
 
     def send(self) -> 'WonderResponse':
@@ -228,32 +234,58 @@ class WonderRequest():
         dates to cause of death. Note that filtering by Months will cause Population and
         Crude Rate / 100k columns to be marked "Not Applicable".
 
-        :param  args:       Table groupings by which the user can format the requested data.
-        :returns:           self
-        :raises ValueError: If user inputs less than one or greater than 5 arguments.
-        :raises TypeError:  If inputted arguments are not all of type Grouping.
+        In order to group by Ten Year Age Groups, age_groups can cover categories of:
+        5-14, 15-24, ..., and 75-84, inclusive.
+        In order to group by Five Year Age Groups, age_groups can cover categories of:
+        1-4, 5-9, ..., 90-94, 95-99, inclusive.
+        Single Year Age Groups can cover any subset of ages from 1-99, inclusive.
+
+        ###### TODO: Remove this boy @param  age_group_type: 
+        @param  *args:          Table groupings by which the user can format the requested data.
+        @raises ValueError:     If user inputs less than one or greater than 5 arguments.
+        @raises TypeError:      If inputted arguments are not all of type Grouping.
+        @returns:               Same CDCWonderRequest object.
         """
         if (len(args) == 0):
             raise ValueError("Method expects at least one grouping argument.")
         elif (len(args) > 5):
             raise ValueError("Method expects at most 5 grouping arguments.")
-        
+
         groupings = list()
         for arg in args:
             if (type(arg) != Grouping):
-                raise TypeError("Provided argument is not of type Grouping.")
+                raise TypeError("Provided arguments are not of type Grouping.")
             elif arg.value not in groupings:
                 groupings.append(arg)
         
-        # Reset b_parameters and group_by_column_names
+        # Reset b_parameters, O_age, and group_by_column_names
         self._group_by_column_names = []
+        self._o_parameters["O_age"] = "D76.V52"
         for b_param_key in self._b_parameters:
             self._b_parameters[b_param_key] = "*None*"
 
         for i, grouping in enumerate(groupings):
             b_param_key = "B_" + str(i+1)
             self._b_parameters[b_param_key] = grouping.value
-            self._group_by_column_names.append(grouping.name)
+
+            if grouping.name.endswith("AgeGroups"):
+                if self.ages != None and not self.ages._is_valid_age_group(grouping):
+                    raise ValueError(f"Invalid Age Grouping: Cannot group by {grouping.name} with Ages {self.ages}.")
+                self._o_parameters["O_age"] = grouping.value
+                self._b_parameters[b_param_key] = grouping.value
+                self._group_by_column_names.append("Age")
+
+                # Modify the TenYear, FiveYear, SingleYear AgeGroups to contain their expected enums
+                formatted_age_groups = []
+                for block in self.ages._as_age_group_type(grouping):
+                    if grouping == Grouping.SingleYearAgeGroups:
+                        formatted_age_groups.append(str(block[0]))
+                    else:
+                        formatted_age_groups.append(f"{block[0]}-{block[-1]}")
+
+                self._v_parameters[f"V_{grouping.value}"] = formatted_age_groups
+            else:
+                self._group_by_column_names.append(grouping.name)
 
         return self
 
@@ -263,8 +295,24 @@ class WonderRequest():
     #########################################
     def age_groups(self, *args) -> 'WonderRequest':
         """
+        TODO: Documentation.
         """
-        raise NotImplementedError
+        if (len(args) == 0):
+            raise ValueError("Method expects at least one Age Group value.")
+
+        ages = None
+        for arg in args:
+            if (not isinstance(arg, Ages)):
+                raise TypeError("Provided arguments are not of type Ages.")
+            elif (ages == None):
+                ages = arg
+            else:
+                ages = ages.union(arg)
+        
+        self._v_parameters["V_D76.V52"] = ages.as_list()
+        
+        self.ages = ages
+        return self
 
 
     def gender(self, *args) -> 'WonderRequest':
