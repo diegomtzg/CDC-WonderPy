@@ -47,7 +47,7 @@ class ICD10Code(Enum):
 			return ICD10Code.best_matches_description(description)
 
 	@classmethod
-	def matches_description_above_threshold(cls, description : str, thresh=0.9 : float) -> typing.List['ICD10Code']:
+	def matches_description_above_threshold(cls, description : str, thresh : float = 0.9) -> typing.List['ICD10Code']:
 		try:
 			results = []
 			for code in ICD10Code:
@@ -59,6 +59,57 @@ class ICD10Code(Enum):
 			with open('..\\resources\\ICD10CodeToLabels.pickle', 'rb') as f:
 				cls.codeToLabels = pickle.load(f)
 			return ICD10Code.matches_description_above_threshold(description, thresh)
+
+	@staticmethod
+	def contains(parent : 'ICD10Code', child : 'ICD10Code') -> bool:
+		if not isinstance(parent, ICD10Code) or not isinstance(child, ICD10Code):
+			raise TypeError("Both the potential parent and potential child code must be an ICD10Code")
+
+		if parent == ICD10Code.ALL:
+			return True
+		elif child == ICD10Code.ALL:
+			return False
+		elif parent == child:
+			return True
+
+		parentSplit = parent.value.split('-')
+		childSplit = child.value.split('-')
+
+		parentBegin = parentSplit[0]
+		if len(parentSplit) == 2:
+			parentEnd = parentSplit[1]
+		else:
+			parentEnd = parentBegin
+
+		childBegin = childSplit[0]
+		if len(childSplit) == 2:
+			childEnd = childSplit[1]
+		else:
+			childEnd = childBegin
+
+		
+
+		parentLow = ICD10Code._convert_to_numeric(parentBegin)
+		parentHigh = ICD10Code._convert_to_numeric(parentEnd)
+		childLow = ICD10Code._convert_to_numeric(childBegin)
+		childHigh = ICD10Code._convert_to_numeric(childEnd)
+
+		return parentLow <= childLow and parentHigh >= childHigh
+
+
+
+	@staticmethod
+	def _convert_to_numeric(codeStr):
+		decimalSplit = codeStr.split('.')
+
+		mainPart = decimalSplit[0]
+		decimalPart = 0
+		if len(decimalSplit) == 2:
+			decimalPart = int(decimalSplit[1])
+
+		letterPart = ord(mainPart[0])-ord('A')
+		numberPart = int(mainPart[1:3])
+		return 100*letterPart + numberPart + 0.1*decimalPart
 
 
 	ALL = "*All*"
@@ -9662,3 +9713,14 @@ class ICD10Code(Enum):
 	Y89_0 = "Y89.0"
 	Y89_1 = "Y89.1"
 	Y89_9 = "Y89.9"
+
+
+print(ICD10Code._convert_to_numeric(ICD10Code.A00.value))
+
+print(ICD10Code._convert_to_numeric(ICD10Code.A16.value))
+
+print(ICD10Code._convert_to_numeric(ICD10Code.A16_2.value))
+
+print(ICD10Code._convert_to_numeric(ICD10Code.B08_2.value))
+
+print(ICD10Code.contains(ICD10Code.A, ICD10Code.Y89_9))

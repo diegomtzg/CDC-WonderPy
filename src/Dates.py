@@ -1,9 +1,11 @@
+import typing
+
 class Dates:
     def __init__(self):
         self._date_set = set()
 
     @staticmethod
-    def single(timePeriod):
+    def single(timePeriod : typing.Union['Year', 'YearAndMonth']) -> 'Dates':
         result = Dates()
         if isinstance(timePeriod, Year):
             for i in range(1, YearAndMonth.NUM_MONTHS + 1):
@@ -18,7 +20,7 @@ class Dates:
         return result
 
     @staticmethod
-    def range(beginPeriod, endPeriod):
+    def range(beginPeriod : typing.Union['Year', 'YearAndMonth'], endPeriod : typing.Union['Year', 'YearAndMonth']) -> 'Dates':
         if not (isinstance(beginPeriod, Year) or isinstance(beginPeriod, YearAndMonth)) or not (isinstance(endPeriod, Year) or isinstance(endPeriod, YearAndMonth)):
             raise TypeError("Time periods must be either CalendarMonths or Years")
         if (isinstance(beginPeriod, YearAndMonth) and not isinstance(endPeriod, YearAndMonth)) or (isinstance(beginPeriod, Year) and not isinstance(endPeriod, Year)):
@@ -46,16 +48,15 @@ class Dates:
             result._date_set.add(YearAndMonth(end_year, end_month))
         return result
 
-    def get_months(self):
+    def get_months(self) -> 'YearAndMonth':
         return list(self._date_set)
 
-    @staticmethod
-    def union(dates1, dates2):
-        if not isinstance(dates1, Dates) or not isinstance(dates2, Dates):
+    def union(self, other : 'Dates') -> 'Dates':
+        if not isinstance(self, Dates) or not isinstance(other, Dates):
             raise TypeError("Both objects must be and instance single Dates")
 
         result = Dates()
-        result._date_set = dates1._date_set.union(dates2._date_set)
+        result._date_set = self._date_set.union(other._date_set)
         return result
 
     def __repr__(self):
@@ -63,22 +64,22 @@ class Dates:
 
 
 class Year:
-    def __init__(self, year):
+    def __init__(self, year : int):
         if not isinstance(year, int):
             raise TypeError("Year must be constructed using an integer to represent a valid year")
         
         self._year = year
 
-    def get_year(self):
+    def get_year(self) -> int:
         return self._year
 
-    def is_before(self, other):
+    def is_before(self, other : typing.Union['Year', 'YearAndMonth']) -> bool:
         if isinstance(other, Year) or isinstance(other, YearAndMonth):
             return self._year < other.get_year()
         else:
             raise TypeError("Other must be a Year or YearAndMonth")
 
-    def is_after(self, other):
+    def is_after(self, other : typing.Union['Year', 'YearAndMonth']) -> bool:
         if isinstance(other, Year) or isinstance(other, YearAndMonth):
             return self._year > other.get_year()
         else:
@@ -97,7 +98,7 @@ class Year:
 
 class YearAndMonth:
     NUM_MONTHS = 12
-    def __init__(self, year, month):
+    def __init__(self, year : int, month : int):
         if not isinstance(month, int) or not isinstance(year, int):
             raise TypeError("YearAndMonth must be constructed using an integer representation for both the month and year. For example, July 1998 would be constructed as YearAndMonth(7, 1998): "+str(month)+", "+str(year))
 
@@ -107,13 +108,13 @@ class YearAndMonth:
         self._month = month
         self._year = year
 
-    def get_month(self):
+    def get_month(self) -> int:
         return self._month
 
-    def get_year(self):
+    def get_year(self) -> int:
         return self._year
 
-    def is_before(self, other):
+    def is_before(self, other : typing.Union['Year', 'YearAndMonth']) -> bool:
         if isinstance(other, Year):
             return self._year < other.get_year()
         elif isinstance(other, YearAndMonth):
@@ -126,7 +127,7 @@ class YearAndMonth:
         else:
             raise TypeError("Other must be a Year or YearAndMonth")
 
-    def is_after(self, other):
+    def is_after(self, other : typing.Union['Year', 'YearAndMonth']) -> bool:
         if isinstance(other, Year):
             return self._year > other.get_year()
         elif isinstance(other, YearAndMonth):
