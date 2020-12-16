@@ -78,6 +78,8 @@ class WonderResponse():
 
         self._2d_list = all_records
         return all_records
-    
+    def __eq__(self, other):
+        return isinstance(other, self.__class__) and self.as_xml() == other.as_xml
+
     def __repr__(self):
         return str(self.as_dataframe())
