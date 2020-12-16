@@ -1,6 +1,9 @@
 from cdcwonderpy.enums import Grouping
 
 class Ages:
+    """
+    TODO: Comment class and each method
+    """
     def __init__(self):
         self._age_set = set()
 

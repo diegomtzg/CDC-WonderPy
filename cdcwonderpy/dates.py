@@ -1,6 +1,9 @@
 import typing
 
 class Dates:
+    """
+    TODO: Comment class and each method
+    """
     def __init__(self):
         self._date_set = set()
 

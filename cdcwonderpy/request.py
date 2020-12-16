@@ -72,7 +72,6 @@ class Request():
     * For more information, see: https://wonder.cdc.gov/wonder/help/WONDER-API.html
     *******************************************************************************************
     """
-    #TODO -> Document single threading behaviour
     def __init__(self):
         """
         Constructor method that initializes this request instance to the same default values as
@@ -242,10 +241,11 @@ class Request():
         1-4, 5-9, ..., 90-94, 95-99, inclusive.
         Single Year Age Groups can cover any subset of ages from 1-99, inclusive.
 
-        @param  *args:          Table groupings by which the user can format the requested data.
-        @raises ValueError:     If user inputs less than one or greater than 5 arguments.
-        @raises TypeError:      If inputted arguments are not all of type Grouping.
-        @returns:               Same Request object.
+        ######
+        :param  *args:          Table groupings by which the user can format the requested data.
+        :raises ValueError:     If user inputs less than one or greater than 5 arguments.
+        :raises TypeError:      If inputted arguments are not all of type Grouping.
+        :returns:               Same Request object.
         """
         if (len(args) == 0):
             raise ValueError("Method expects at least one grouping argument.")
@@ -296,7 +296,10 @@ class Request():
     #########################################
     def age_groups(self, *args) -> 'Request':
         """
-        TODO: Documentation.
+        Specify which age group options to filter by.
+        :param args:        the age group options that the user wants to filter by
+        :returns:           self
+        :raises TypeError:  if arguments provided aren't of type Gender
         """
         if (len(args) == 0):
             raise ValueError("Method expects at least one Age Group value.")
@@ -319,7 +322,7 @@ class Request():
     def gender(self, *args) -> 'Request':
         """
         Specify which Gender option to filter by.
-        :param gender:      the gender option that the user wants to filter by
+        :param args:      the gender options that the user wants to filter by
         :returns:           self
         :raises ValueError: if at least one race isn't provided or if Gender.All
         is provided with other Gender options.
@@ -343,7 +346,8 @@ class Request():
         Specify the Race options to filter by.
         :param args:         the race options that the user wants to filter by
         :returns:            self
-        :raises: ValueError: if at least one race isn't provided or if Race.All is provided with other Race options
+        :raises: ValueError: if at least one race isn't provided or if Race.All
+                             is provided with other Race options
         :raises TypeError:   if arguments provided aren't of type Race
         """
         if (len(args) == 0):
@@ -556,21 +560,3 @@ class Request():
             parameterString += "</parameter>\n"
 
         return parameterString
-
-
-# Sample code TODO remove this, add example code in examples.py outside in the main folder
-if __name__ == '__main__':
-    req = Request()
-    req.dates(Dates.range(Year(2001), Year(2003)), Dates.single(YearAndMonth(2005, 4)), Dates.range(YearAndMonth(2003, 6), YearAndMonth(2004, 9)))
-    #from ICD10Code import ICD10Code
-    #req.cause_of_death(ICD10Code.A32, ICD10Code.F10_F19, ICD10Code.F01_F99, ICD10Code.B65_B83, ICD10Code.K20_K31)
-    #req.cause_of_death(ICD10Code.description_matches("Disorders of \w+"))
-    req.hispanic_origin(HispanicOrigin.HispanicOrLatino, HispanicOrigin.NotHispanicOrLatino)
-    req.gender(Gender.Female).race(Race.Asian)
-    req.weekday(Weekday.Sun, Weekday.Mon, Weekday.Thu)
-    req.autopsy(Autopsy.Yes)
-    req.place_of_death(PlaceOfDeath.DecedentHome)
-    req.group_by(Grouping.Gender)
-
-    response = req.send()
-    print(response.as_dataframe())

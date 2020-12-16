@@ -3,8 +3,10 @@ import copy
 import bs4 as bs
 import pandas as pd
 
-#TODO -> add class documentation
 class Response():
+    """
+    Immutable representation of the response returned from the Wonder HTTP endpoint.
+    """
     def __init__(self, xml, groupings):
         self._xml = xml
         self._groupings = groupings
