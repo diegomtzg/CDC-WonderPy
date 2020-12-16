@@ -1,7 +1,13 @@
 import cdcwonderpy as wonder
 import unittest
 
-# TODO -> add testing documentation
+"""
+This class is responsible for end to end testing. The following tests
+have been replicated on the CDCWonder API gui and the resulting text files
+can be found in the resources directory. These tests check if the results from
+calling the API endpoint through our API, and filtering and grouping by
+the same parameters gives users the same results.
+"""
 # End to end testing
 class EndToEndTests(unittest.TestCase):
     def test1(self):
@@ -10,6 +16,7 @@ class EndToEndTests(unittest.TestCase):
         response = req.send()
         res2DList = response.as_2d_list()
 
+        # Obtained from text file exported with same grouping on gui
         female_deaths_from_gui = 25324635
         male_deaths_from_gui = 25243139
         female_population = 3095193684
@@ -17,6 +24,7 @@ class EndToEndTests(unittest.TestCase):
         female_crude_rate = 818.2
         male_crude_rate = 843.3
 
+        # Check if we get the same result
         self.assertEqual(res2DList[0][0], "Female")
         self.assertEqual(res2DList[1][0], "Male")
 
@@ -45,6 +53,7 @@ class EndToEndTests(unittest.TestCase):
 
         res2DList = response.as_2d_list()
 
+        # Obtained from text file exported with same grouping and filters on gui
         hispanic_or_latino_deaths_gui = 1250489
         not_hispanic_or_latino_deaths_gui = 20268863	
         not_stated_deaths_gui = 59713
@@ -55,6 +64,7 @@ class EndToEndTests(unittest.TestCase):
         not_hispanic_or_latino_crude_rate_gui = "Not Applicable"
         not_stated_crude_rate_gui = "Not Applicable"
 
+        # Check if we get the same result
         self.assertEqual(int(res2DList[0][1]), hispanic_or_latino_deaths_gui)
         self.assertEqual(int(res2DList[1][1]), not_hispanic_or_latino_deaths_gui)
         self.assertEqual(int(res2DList[2][1]), not_stated_deaths_gui)
