@@ -1,7 +1,7 @@
 from enum import Enum
 import pickle
 import re
-import rapidfuzz as fuzz
+from rapidfuzz import fuzz
 import typing
 
 class ICD10Code(Enum):
@@ -44,10 +44,10 @@ class ICD10Code(Enum):
 		except AttributeError:
 			with open('..\\resources\\ICD10CodeToLabels.pickle', 'rb') as f:
 				cls.codeToLabels = pickle.load(f)
-			return ICD10Code.best_matches_description(description)
+			return ICD10Code.description_best_match(description)
 
 	@classmethod
-	def matches_description_above_threshold(cls, description : str, thresh : float = 0.9) -> typing.List['ICD10Code']:
+	def description_matches_above_threshold(cls, description : str, thresh : float = 90) -> typing.List['ICD10Code']:
 		try:
 			results = []
 			for code in ICD10Code:
@@ -58,7 +58,7 @@ class ICD10Code(Enum):
 		except AttributeError:
 			with open('..\\resources\\ICD10CodeToLabels.pickle', 'rb') as f:
 				cls.codeToLabels = pickle.load(f)
-			return ICD10Code.matches_description_above_threshold(description, thresh)
+			return ICD10Code.description_matches_above_threshold(description, thresh)
 
 	@staticmethod
 	def contains(parent : 'ICD10Code', child : 'ICD10Code') -> bool:

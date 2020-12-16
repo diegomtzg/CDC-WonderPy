@@ -500,8 +500,6 @@ class WonderRequest():
         """
         """
         from ICD10Code import ICD10Code
-        if len(args) == 0:
-            raise ValueError("Method expects at least one ICD10Code")
 
         flattened = []
         for arg in args:
@@ -512,6 +510,9 @@ class WonderRequest():
                 flattened.append(arg)
             else:
                 raise TypeError("All arguments must be either an ICD10Code or an Iterable containing ICD10Codes")
+
+        if len(flattened) == 0:
+            raise ValueError("Method expects at least one ICD10Code")
 
         icd10_params = []
         shouldBeAdded = True
@@ -525,8 +526,6 @@ class WonderRequest():
             
             if shouldBeAdded:
                 icd10_params.append(code)
-
-        print(icd10_params)
 
         self._f_parameters["F_D76.V2"] = [ e.value for e in icd10_params ]
         return self
@@ -562,14 +561,15 @@ class WonderRequest():
 if __name__ == '__main__':
     req = WonderRequest()
     req.dates(Dates.range(Year(2001), Year(2003)), Dates.single(YearAndMonth(2005, 4)), Dates.range(YearAndMonth(2003, 6), YearAndMonth(2004, 9)))
-    from ICD10Code import ICD10Code
-    req.cause_of_death(ICD10Code.A32, ICD10Code.F10_F19, ICD10Code.F01_F99, ICD10Code.B65_B83, ICD10Code.K20_K31)
+    #from ICD10Code import ICD10Code
+    #req.cause_of_death(ICD10Code.A32, ICD10Code.F10_F19, ICD10Code.F01_F99, ICD10Code.B65_B83, ICD10Code.K20_K31)
+    #req.cause_of_death(ICD10Code.description_matches("Disorders of \w+"))
     # req.hispanic_origin(HispanicOrigin.HispanicOrLatino, HispanicOrigin.NotHispanicOrLatino)
     # req.gender(Gender.Female).race(Race.Asian)
     # req.weekday(Weekday.Sun, Weekday.Mon, Weekday.Thu)
     # req.autopsy(Autopsy.Yes)
     # req.place_of_death(PlaceOfDeath.DecedentHome)
-    req.group_by(Grouping.ICDChapter, Grouping.Year)
+    req.group_by(Grouping.Year)
 
     response = req.send()
     print(response.as_dataframe())
