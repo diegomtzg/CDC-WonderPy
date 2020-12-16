@@ -34,8 +34,8 @@ class Request():
     * - Measures: Deaths, Population, Crude Rate (changing this is out of scope for this project)
     * - Location/Urbanization: All (cannot be changed, see limitations above)
     *
-    * NOTE: This class does not support multiple threads accessing objects of this class at the same
-    *       time.
+    * NOTE: Objects of this class should not be accessed by multiple threads at the same
+    *       time. It will result in undefined behavior.
     *
     *******************************************************************************************
     * LIMITATION: ASSURANCE OF CONFIDENTIALITY
