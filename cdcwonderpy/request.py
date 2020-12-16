@@ -335,7 +335,7 @@ class Request():
             if (type(arg) != Gender):
                 raise TypeError("Provided arguments aren't of Gender enum type. Please provide arguments of the right type. For reference, check cdcwonderpy/enums.py")
             gender_options.add(arg.value)
-        if (len(gender_options) > 1 and Gender.All in gender_options):
+        if (len(gender_options) > 1 and Gender.ALL in gender_options):
             raise ValueError("Gender has both 'All Genders' and other options selected. Please select either 'All' or specific options.")
         self._v_parameters["V_D76.V7"] = list(gender_options)
         return self
@@ -357,7 +357,7 @@ class Request():
             if (type(arg) != Race):
                 raise TypeError("Provided arguments aren't of race enum type. Please provide arguments of the right type. For reference, check cdcwonderpy/enums.py")
             races.add(arg.value)
-        if (len(races) > 1 and Race.All in races):
+        if (len(races) > 1 and Race.ALL in races):
             raise ValueError("Race has both 'All' and other options selected. Please select either 'All' or specific options.")
         self._v_parameters["V_D76.V8"] = list(races)
         return self
@@ -379,9 +379,9 @@ class Request():
             if (type(arg) != HispanicOrigin):
                 raise TypeError("Provided arguments aren't of Hispanic Origin enum type. Please provide arguments of the right type. For reference, check cdcwonderpy/enums.py")
             hispanic_origins.add(arg.value)
-        if (len(hispanic_origins) > 1 and HispanicOrigin.All in hispanic_origins):
+        if (len(hispanic_origins) > 1 and HispanicOrigin.ALL in hispanic_origins):
             raise ValueError("Hispanic Origin has both 'All' and other options selected. Please select either 'All' or specific options.")
-        if (len(hispanic_origins) > 1 and HispanicOrigin.NotStated in hispanic_origins):
+        if (len(hispanic_origins) > 1 and HispanicOrigin.NOT_STATED in hispanic_origins):
             raise ValueError("Hispanic Origin has both 'All' and other options selected. Please select either 'All' or specific options.")
         self._v_parameters["V_D76.V17"] = list(hispanic_origins)
         return self
@@ -449,7 +449,7 @@ class Request():
             if (type(arg) != Weekday):
                 raise TypeError("Provided arguments aren't of Weekday enum type. Please provide arguments of the right type. For reference, check cdcwonderpy/enums.py")
             weekdays.add(arg.value)
-        if (len(weekdays) > 1 and Weekday.All in weekdays):
+        if (len(weekdays) > 1 and Weekday.ALL in weekdays):
             raise ValueError("PlaceOfDeath has both 'All' and other options selected. Please select either 'All' or specific options.")
         self._v_parameters["V_D76.V24"] = list(weekdays)
         return self
@@ -474,7 +474,7 @@ class Request():
             if (type(arg) != PlaceOfDeath):
                 raise TypeError("Provided arguments aren't of PlaceOfDeath enum type. Please provide arguments of the right type. For reference, check cdcwonderpy/enums.py")
             place_of_death_options.add(arg.value)
-        if (len(place_of_death_options) > 1 and PlaceOfDeath.All in place_of_death_options):
+        if (len(place_of_death_options) > 1 and PlaceOfDeath.ALL in place_of_death_options):
             raise ValueError("PlaceOfDeath has both 'All' and other options selected. Please select either 'All' or specific options.")
         self._v_parameters["V_D76.V21"] = list(place_of_death_options)
         return self
@@ -495,7 +495,7 @@ class Request():
             if (type(arg) != Autopsy):
                 raise TypeError("Provided arguments aren't of Autopsy enum type. Please provide arguments of the right type. For reference, check cdcwonderpy/enums.py")
             autopsy_options.add(arg.value)
-        if (len(autopsy_options) > 1 and Autopsy.All in autopsy_options):
+        if (len(autopsy_options) > 1 and Autopsy.ALL in autopsy_options):
             raise ValueError("Autopsy has both 'All' and other options selected. Please select either 'All' or specific options.")
         self._v_parameters["V_D76.V20"] = list(autopsy_options)
         return self

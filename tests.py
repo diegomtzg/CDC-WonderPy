@@ -24,7 +24,7 @@ class EndToEndTests():
     @classmethod
     def test1(cls):
         req = wonder.Request()
-        req.group_by(wonder.Grouping.Gender)
+        req.group_by(wonder.Grouping.GENDER)
         response = req.send()
         res2DList = response.as_2d_list()
 
@@ -34,7 +34,7 @@ class EndToEndTests():
         male_population = 2993439317
         female_crude_rate = 818.2
         male_crude_rate = 843.3
-        
+
         assert(res2DList[0][0] == "Female")
         assert(res2DList[1][0] == "Male")
 
@@ -49,16 +49,15 @@ class EndToEndTests():
 
     @classmethod
     def test2(cls):
-        pass
         req = wonder.Request()
-        req.group_by(wonder.Grouping.HispanicOrigin)
-        req.weekday(wonder.Weekday.Sun, wonder.Weekday.Mon, wonder.Weekday.Tue)
+        req.group_by(wonder.Grouping.HISPANIC_ORIGIN)
+        req.weekday(wonder.Weekday.SUN, wonder.Weekday.MON, wonder.Weekday.TUE)
         response = req.send()
         resDataFrame = response.as_dataframe()
 
         #Check that we get all desired column headings
         columnHeadings = list(resDataFrame.columns)
-        assert(columnHeadings[0] == "HispanicOrigin")
+        assert(columnHeadings[0] == "HISPANIC_ORIGIN")
         assert(columnHeadings[1] == "Deaths")
         assert(columnHeadings[2] == "Population")
         assert(columnHeadings[3] == "Crude Rate Per 100,000")
