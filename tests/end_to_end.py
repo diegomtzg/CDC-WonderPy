@@ -1,21 +1,7 @@
 import cdcwonderpy as wonder
-import bs4 as bs
-import pandas as pd
 
-#TODO -> add testing documentation
-#Testing parsing of response
-class CDCWonderResponseFormattingTests():
-    
-    #TODO -> make this a static method?
-    @classmethod
-    def test_as_2d_list(cls):
-        pass
-    
-    @classmethod
-    def test_as_dataframe(cls):
-        pass
-
-#End to end testing
+# TODO -> add testing documentation
+# End to end testing
 class EndToEndTests():
     @classmethod
     def _float_is_almost_equal(cls, a, b, epsilon=0.1):
