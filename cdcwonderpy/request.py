@@ -7,10 +7,10 @@ from collections.abc import Iterable
 # from enums import *
 # from dates import *
 # from ages import *
-from wonder.response import *
-from wonder.enums import *
-from wonder.dates import *
-from wonder.ages import *
+from cdcwonderpy.response import *
+from cdcwonderpy.enums import *
+from cdcwonderpy.dates import *
+from cdcwonderpy.ages import *
 
 class Request():
     """
@@ -332,7 +332,7 @@ class Request():
         gender_options = set()
         for arg in args:
             if (type(arg) != Gender):
-                raise TypeError("Provided arguments aren't of Gender enum type. Please provide arguments of the right type. For reference, check Wonder/Enums.py")
+                raise TypeError("Provided arguments aren't of Gender enum type. Please provide arguments of the right type. For reference, check cdcwonderpy/enums.py")
             gender_options.add(arg.value)
         if (len(gender_options) > 1 and Gender.All in gender_options):
             raise ValueError("Gender has both 'All Genders' and other options selected. Please select either 'All' or specific options.")
@@ -353,7 +353,7 @@ class Request():
         races = set()
         for arg in args:
             if (type(arg) != Race):
-                raise TypeError("Provided arguments aren't of race enum type. Please provide arguments of the right type. For reference, check Wonder/Enums.py")
+                raise TypeError("Provided arguments aren't of race enum type. Please provide arguments of the right type. For reference, check cdcwonderpy/enums.py")
             races.add(arg.value)
         if (len(races) > 1 and Race.All in races):
             raise ValueError("Race has both 'All' and other options selected. Please select either 'All' or specific options.")
@@ -375,7 +375,7 @@ class Request():
         hispanic_origins = set()
         for arg in args:
             if (type(arg) != HispanicOrigin):
-                raise TypeError("Provided arguments aren't of Hispanic Origin enum type. Please provide arguments of the right type. For reference, check Wonder/Enums.py")
+                raise TypeError("Provided arguments aren't of Hispanic Origin enum type. Please provide arguments of the right type. For reference, check cdcwonderpy/enums.py")
             hispanic_origins.add(arg.value)
         if (len(hispanic_origins) > 1 and HispanicOrigin.All in hispanic_origins):
             raise ValueError("Hispanic Origin has both 'All' and other options selected. Please select either 'All' or specific options.")
@@ -445,7 +445,7 @@ class Request():
         weekdays = set()
         for arg in args:
             if (type(arg) != Weekday):
-                raise TypeError("Provided arguments aren't of Weekday enum type. Please provide arguments of the right type. For reference, check Wonder/Enums.py")
+                raise TypeError("Provided arguments aren't of Weekday enum type. Please provide arguments of the right type. For reference, check cdcwonderpy/enums.py")
             weekdays.add(arg.value)
         if (len(weekdays) > 1 and Weekday.All in weekdays):
             raise ValueError("PlaceOfDeath has both 'All' and other options selected. Please select either 'All' or specific options.")
@@ -470,7 +470,7 @@ class Request():
         place_of_death_options = set()
         for arg in args:
             if (type(arg) != PlaceOfDeath):
-                raise TypeError("Provided arguments aren't of PlaceOfDeath enum type. Please provide arguments of the right type. For reference, check Wonder/Enums.py")
+                raise TypeError("Provided arguments aren't of PlaceOfDeath enum type. Please provide arguments of the right type. For reference, check cdcwonderpy/enums.py")
             place_of_death_options.add(arg.value)
         if (len(place_of_death_options) > 1 and PlaceOfDeath.All in place_of_death_options):
             raise ValueError("PlaceOfDeath has both 'All' and other options selected. Please select either 'All' or specific options.")
@@ -491,7 +491,7 @@ class Request():
         autopsy_options = set()
         for arg in args:
             if (type(arg) != Autopsy):
-                raise TypeError("Provided arguments aren't of Autopsy enum type. Please provide arguments of the right type. For reference, check Wonder/Enums.py")
+                raise TypeError("Provided arguments aren't of Autopsy enum type. Please provide arguments of the right type. For reference, check cdcwonderpy/enums.py")
             autopsy_options.add(arg.value)
         if (len(autopsy_options) > 1 and Autopsy.All in autopsy_options):
             raise ValueError("Autopsy has both 'All' and other options selected. Please select either 'All' or specific options.")

@@ -1,9 +1,9 @@
-import wonder 
+import cdcwonderpy as wonder
 import bs4 as bs
 import pandas as pd
 
 #Testing parsing of response
-class WonderResponseTest():
+class CDCWonderResponseFormattingTests():
     
     @classmethod
     def test_as_2d_list(cls):
