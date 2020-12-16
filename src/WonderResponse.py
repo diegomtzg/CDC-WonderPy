@@ -78,3 +78,6 @@ class WonderResponse():
 
         self._2d_list = all_records
         return all_records
+    
+    def __repr__(self):
+        return str(self.as_dataframe())

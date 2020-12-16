@@ -489,7 +489,7 @@ if __name__ == '__main__':
     # req.weekday(Weekday.Sun, Weekday.Mon, Weekday.Thu)
     # req.autopsy(Autopsy.Yes)
     # req.place_of_death(PlaceOfDeath.DecedentHome)
-    req.group_by(Grouping.Gender, Grouping.Month)
+    req.group_by(Grouping.Gender)
 
     response = req.send()
     print(response.as_dataframe())
