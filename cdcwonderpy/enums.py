@@ -1,5 +1,6 @@
 from enum import Enum
 
+#TODO -> change enum name format
 #########################################
 #### Grouping Enums
 #########################################

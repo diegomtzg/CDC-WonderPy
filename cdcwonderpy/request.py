@@ -560,7 +560,7 @@ class Request():
         return parameterString
 
 
-# Sample code
+# Sample code TODO remove this, add example code in examples.py outside in the main folder
 if __name__ == '__main__':
     req = Request()
     req.dates(Dates.range(Year(2001), Year(2003)), Dates.single(YearAndMonth(2005, 4)), Dates.range(YearAndMonth(2003, 6), YearAndMonth(2004, 9)))

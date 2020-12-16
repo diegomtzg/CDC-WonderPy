@@ -2,9 +2,11 @@ import cdcwonderpy as wonder
 import bs4 as bs
 import pandas as pd
 
+#TODO -> add testing documentation
 #Testing parsing of response
 class CDCWonderResponseFormattingTests():
     
+    #TODO -> make this a static method?
     @classmethod
     def test_as_2d_list(cls):
         pass

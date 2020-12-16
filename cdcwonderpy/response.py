@@ -3,6 +3,7 @@ import copy
 import bs4 as bs
 import pandas as pd
 
+#TODO -> add class documentation
 class Response():
     def __init__(self, xml, groupings):
         self._xml = xml
