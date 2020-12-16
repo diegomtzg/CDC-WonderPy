@@ -239,7 +239,6 @@ class Request():
         1-4, 5-9, ..., 90-94, 95-99, inclusive.
         Single Year Age Groups can cover any subset of ages from 1-99, inclusive.
 
-        ###### TODO: Remove this boy @param  age_group_type: 
         @param  *args:          Table groupings by which the user can format the requested data.
         @raises ValueError:     If user inputs less than one or greater than 5 arguments.
         @raises TypeError:      If inputted arguments are not all of type Grouping.
@@ -519,7 +518,7 @@ class Request():
             for accepted_code in icd10_params:
                 if ICD10Code.contains(accepted_code, code):
                     shouldBeAdded = False
-                    break;
+                    break
                 elif ICD10Code.contains(code, accepted_code):
                     icd10_params.remove(accepted_code)
             
