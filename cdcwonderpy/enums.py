@@ -48,9 +48,9 @@ class HispanicOrigin(Enum):
 
 class Race(Enum):
     All = "*All*"
-    AmericanIndian = "1002-5"
-    Asian = "A-PI"
-    AfricanAmerican = "2054-5"
+    AmericanIndianOrAlaskanNative = "1002-5"
+    AsianOrPacificIslander = "A-PI"
+    BlackOrAfricanAmerican = "2054-5"
     White = "2106-3"
 
 #########################################
