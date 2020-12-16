@@ -13,8 +13,7 @@ class ICD10Code(Enum):
 		try:
 			return cls.codeToLabels[icd_code]
 		except AttributeError:
-			with open('..\\resources\\ICD10CodeToLabels.pickle', 'rb') as f:
-				cls.codeToLabels = pickle.load(f)
+			_open_description_map(cls)
 			return ICD10Code.description(icd_code)
 	
 	@classmethod
@@ -26,8 +25,7 @@ class ICD10Code(Enum):
 					results.append(code)
 			return results
 		except AttributeError:
-			with open('..\\resources\\ICD10CodeToLabels.pickle', 'rb') as f:
-				cls.codeToLabels = pickle.load(f)
+			_open_description_map(cls)
 			return ICD10Code.description_matches(regex)
 
 	@classmethod
@@ -42,8 +40,7 @@ class ICD10Code(Enum):
 					bestCode = code
 			return bestCode
 		except AttributeError:
-			with open('..\\resources\\ICD10CodeToLabels.pickle', 'rb') as f:
-				cls.codeToLabels = pickle.load(f)
+			_open_description_map(cls)
 			return ICD10Code.description_best_match(description)
 
 	@classmethod
@@ -56,8 +53,7 @@ class ICD10Code(Enum):
 					results.append(code)
 			return results
 		except AttributeError:
-			with open('..\\resources\\ICD10CodeToLabels.pickle', 'rb') as f:
-				cls.codeToLabels = pickle.load(f)
+			_open_description_map(cls)
 			return ICD10Code.description_matches_above_threshold(description, thresh)
 
 	@staticmethod
@@ -117,6 +113,11 @@ class ICD10Code(Enum):
 		letterPart = ord(mainPart[0])-ord('A')
 		numberPart = int(mainPart[1:3])
 		return 100*letterPart + numberPart + 0.1*decimalPart
+
+	@classmethod
+	def _open_description_map(cls):
+		with open(os.path.join('..', 'resources', 'ICD10CodeToLabels.pickle'), 'rb') as f:
+			cls.codeToLabels = pickle.load(f)
 
 
 	ALL = "*All*"
