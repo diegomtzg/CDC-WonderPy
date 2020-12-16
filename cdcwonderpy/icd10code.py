@@ -3,7 +3,8 @@ import pickle
 import re
 from rapidfuzz import fuzz
 import typing
-
+"""
+"""
 class ICD10Code(Enum):
 	@classmethod
 	def description(cls, icd_code : 'ICD10Code') -> str:
