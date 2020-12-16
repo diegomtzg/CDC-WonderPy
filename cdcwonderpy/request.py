@@ -1,5 +1,4 @@
-import requests
-from requests import RequestException
+from requests import RequestException, post
 import bs4 as bs
 from collections.abc import Iterable
 
@@ -211,7 +210,7 @@ class Request():
         request_xml += "</request-parameters>"
 
         url = "https://wonder.cdc.gov/controller/datarequest/D76"
-        response = requests.post(url, data={"request_xml": request_xml})
+        response = post(url, data={"request_xml": request_xml})
 
         # Raise exception based on response status code and server error messages.
         if response.status_code != 200:
@@ -240,8 +239,6 @@ class Request():
         In order to group by Five Year Age Groups, age_groups can cover categories of:
         1-4, 5-9, ..., 90-94, 95-99, inclusive.
         Single Year Age Groups can cover any subset of ages from 1-99, inclusive.
-
-        ######
         :param  *args:          Table groupings by which the user can format the requested data.
         :raises ValueError:     If user inputs less than one or greater than 5 arguments.
         :raises TypeError:      If inputted arguments are not all of type Grouping.
@@ -503,6 +500,11 @@ class Request():
 
     def cause_of_death(self, *args) -> 'Request':
         """
+        Specify ICD10Code objects to filter by. Default is *All*
+        :param args: the ICD10Code options that the user wants to filter by
+        :returns: self
+        :raises ValueError: if at least one ICD10Code option isn't provided, or if ICD10Code.All is provided with other ICD10Code options
+        :raises TypeError: if arguments provided aren't of type ICD10Code
         """
         from ICD10Code import ICD10Code
 
