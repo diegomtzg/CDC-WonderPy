@@ -1,90 +1,89 @@
 from enum import Enum
 
-#TODO -> change enum name format
 #########################################
 #### Grouping Enums
 #########################################
 class Grouping(Enum):
     # Demographics
-    TenYearAgeGroups = "D76.V5"
-    FiveYearAgeGroups = "D76.V51"
-    SingleYearAgeGroups = "D76.V52"
+    TEN_YEAR_AGE_GROUPS = "D76.V5"
+    FIVE_YEAR_AGE_GROUPS = "D76.V51"
+    SINGLE_YEAR_AGE_GROUPS = "D76.V52"
 
-    Gender = "D76.V7"
-    HispanicOrigin = "D76.V17"
-    Race = "D76.V8"
+    GENDER = "D76.V7"
+    HISPANIC_ORIGIN = "D76.V17"
+    RACE = "D76.V8"
 
     # Year and Month
-    Year = "D76.V1-level1"
-    Month = "D76.V1-level2"
+    YEAR = "D76.V1-level1"
+    MONTH = "D76.V1-level2"
 
-    # Weekday, Autopsy, Place single Death
-    Weekday = "D76.V24"
-    Autopsy = "D76.V20"
-    PlaceOfDeath = "D76.V21"
+    # Weekday, Autopsy, Place of Death
+    WEEKDAY = "D76.V24"
+    AUTOPSY = "D76.V20"
+    PLACE_OF_DEATH = "D76.V21"
 
     # Cause single Death
-    LeadingCausesOfDeath = "D76.V28"
-    ICDChapter = "D76.V2-level1"
-    ICDSubChapter = "D76.V2-level2"
-    CauseOfDeath = "D76.V2-level3"
-    ICD10CauseList113 = "D76.V4"
-    InjuryIntent = "D76.V22"
-    InjuryMechanismAndAllOtherLeadingCauses = "D76.V23"
-    DrugOrAlcoholInducedCauses = "D76.V25"
+    LEADING_CAUSES_OF_DEATH = "D76.V28"
+    ICD_CHAPTER = "D76.V2-level1"
+    ICD_SUBCHAPTER = "D76.V2-level2"
+    CAUSE_OF_DEATH = "D76.V2-level3"
+    ICD10_CAUSE_LIST_113 = "D76.V4"
+    INJURY_INTENT = "D76.V22"
+    INJURY_MECHANISM_AND_ALL_OTHER_LEADING_CAUSES = "D76.V23"
+    DRUG_OR_ALCOHOL_INDUCED_CAUSES = "D76.V25"
 
 #########################################
 #### Demographic Enums
 #########################################
 class Gender(Enum):
-    All = "*All*"
-    Male = "M"
-    Female = "F"
+    ALL = "*All*"
+    MALE = "M"
+    FEMALE = "F"
 
 class HispanicOrigin(Enum):
-    All = "*All*"
-    HispanicOrLatino = "2135-2"
-    NotHispanicOrLatino = "2186-2"
-    NotStated = "NS"
+    ALL = "*All*"
+    HISPANIC_OR_LATINO = "2135-2"
+    NOT_HISPANIC_OR_LATINO = "2186-2"
+    NOT_STATED = "NS"
 
 class Race(Enum):
-    All = "*All*"
-    AmericanIndianOrAlaskanNative = "1002-5"
-    AsianOrPacificIslander = "A-PI"
-    BlackOrAfricanAmerican = "2054-5"
-    White = "2106-3"
+    ALL = "*All*"
+    AMERICAN_INDIAN_OR_ALASKAN_NATIVE = "1002-5"
+    ASIAN_OR_PACIFIC_ISLANDER = "A-PI"
+    BLACK_OR_AFRICAN_AMERICAN = "2054-5"
+    WHITE = "2106-3"
 
 #########################################
 #### Chronology Enums
 #########################################
 class Weekday(Enum):
-    All = "*All*"
-    Sun = "1"
-    Mon = "2"
-    Tue = "3"
-    Wed = "4"
-    Thu = "5"
-    Fri = "6"
-    Sat = "7"
-    Unknown = "9"
+    ALL = "*All*"
+    SUN = "1"
+    MON = "2"
+    TUE = "3"
+    WED = "4"
+    THU = "5"
+    FRI = "6"
+    SAT = "7"
+    UNKNOWN = "9"
 
 #########################################
 #### Miscellaneous Enums
 #########################################
 class PlaceOfDeath(Enum):
-    All = "*All*"
-    MedicalFacilityInpatient = "1"
-    MedicalFacilityOutpatient = "2"
-    MedicalFacilityDeadOnArrival = "3"
-    MedicalFacilityUnknownStatus = "10"
-    DecedentHome = "4"
-    HospiceFacility = "5"
-    NursingHome = "6"
-    Other = "7"
-    Unknown = "9"
+    ALL = "*All*"
+    MEDICAL_FACILITY_INPATIENT = "1"
+    MEDICAL_FACILITY_OUTPATIENT = "2"
+    MEDICAL_FACILITY_DEAD_ON_ARRIVAL = "3"
+    MEDICAL_FACILITY_UNKNOWN_STATUS = "10"
+    DECEDENT_HOME = "4"
+    HOSPICE_FACILITY = "5"
+    NURSING_HOME = "6"
+    OTHER = "7"
+    UNKNOWN = "9"
 
 class Autopsy(Enum):
-    All = "*All*"
-    No = "N"
-    Yes = "Y"
-    Unknown = "U"
+    ALL = "*All*"
+    NO = "N"
+    YES = "Y"
+    UNKNOWN = "U"
