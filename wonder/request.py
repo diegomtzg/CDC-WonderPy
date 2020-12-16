@@ -2,18 +2,21 @@ import requests
 from requests import RequestException
 import bs4 as bs
 
-from WonderResponse import WonderResponse
-from WonderEnums import *
-from Dates import *
-from Ages import *
+# from response import *
+# from enums import *
+# from dates import *
+# from ages import *
+from wonder.response import *
+from wonder.enums import *
+from wonder.dates import *
+from wonder.ages import *
 
-
-class WonderRequest():
+class Request():
     """
     * A wrapper around the CDC Wonder REST API, specific to the Underlying Cause of Death Dataset (D76).
     * This API provides similar access to the database, but removes the need to specify unnecessary
     * parameters, renames them so that they're easier to use and provides a utility class called
-    * WonderResponse that contains useful data transformation methods to analyze the data in
+    * Response that contains useful data transformation methods to analyze the data in
     * different formats.
     *
     * NOTE: By using this API, users implicitly signify that they will abide by the terms of data
@@ -69,7 +72,7 @@ class WonderRequest():
     * For more information, see: https://wonder.cdc.gov/wonder/help/WONDER-API.html
     *******************************************************************************************
     """
-
+    #TODO -> Document single threading behaviour
     def __init__(self):
         """
         Constructor method that initializes this request instance to the same default values as
@@ -190,10 +193,10 @@ class WonderRequest():
         self.ages = None
 
 
-    def send(self) -> 'WonderResponse':
+    def send(self) -> 'Response':
         """
-        Sends this request to the CDC Wonder API endpoint and returns the response as a WonderResponse.
-        :returns WonderResponse: represents the response of the server
+        Sends this request to the CDC Wonder API endpoint and returns the response as a Response.
+        :returns Response: represents the response of the server
         :raises RequestException: when the server responds with an error (see exception message for details).
         """
         request_xml = "<request-parameters>\n"
@@ -221,13 +224,13 @@ class WonderRequest():
 
             raise RequestException("The server returned an error: " + exception_message)
 
-        return WonderResponse(response.text, self._group_by_column_names)
+        return Response(response.text, self._group_by_column_names)
 
 
     #########################################
     #### Organize Table Layout
     #########################################
-    def group_by(self, *args) -> 'WonderRequest':
+    def group_by(self, *args) -> 'Request':
         """
         Groups API requested results by one to five filters ranging from demographics to
         dates to cause of death. Note that filtering by Months will cause Population and
@@ -243,7 +246,7 @@ class WonderRequest():
         @param  *args:          Table groupings by which the user can format the requested data.
         @raises ValueError:     If user inputs less than one or greater than 5 arguments.
         @raises TypeError:      If inputted arguments are not all of type Grouping.
-        @returns:               Same CDCWonderRequest object.
+        @returns:               Same Request object.
         """
         if (len(args) == 0):
             raise ValueError("Method expects at least one grouping argument.")
@@ -292,7 +295,7 @@ class WonderRequest():
     #########################################
     #### Demographic
     #########################################
-    def age_groups(self, *args) -> 'WonderRequest':
+    def age_groups(self, *args) -> 'Request':
         """
         TODO: Documentation.
         """
@@ -314,7 +317,7 @@ class WonderRequest():
         return self
 
 
-    def gender(self, *args) -> 'WonderRequest':
+    def gender(self, *args) -> 'Request':
         """
         Specify which Gender option to filter by.
         :param gender:      the gender option that the user wants to filter by
@@ -328,7 +331,7 @@ class WonderRequest():
         gender_options = set()
         for arg in args:
             if (type(arg) != Gender):
-                raise TypeError("Provided arguments aren't of Gender enum type. Please provide arguments of the right type. For reference, check CDCWonderEnums.py")
+                raise TypeError("Provided arguments aren't of Gender enum type. Please provide arguments of the right type. For reference, check Wonder/Enums.py")
             gender_options.add(arg.value)
         if (len(gender_options) > 1 and Gender.All in gender_options):
             raise ValueError("Gender has both 'All Genders' and other options selected. Please select either 'All' or specific options.")
@@ -336,7 +339,7 @@ class WonderRequest():
         return self
 
 
-    def race(self, *args) -> 'WonderRequest':
+    def race(self, *args) -> 'Request':
         """
         Specify the Race options to filter by.
         :param args:         the race options that the user wants to filter by
@@ -349,7 +352,7 @@ class WonderRequest():
         races = set()
         for arg in args:
             if (type(arg) != Race):
-                raise TypeError("Provided arguments aren't of race enum type. Please provide arguments of the right type. For reference, check CDCWonderEnums.py")
+                raise TypeError("Provided arguments aren't of race enum type. Please provide arguments of the right type. For reference, check Wonder/Enums.py")
             races.add(arg.value)
         if (len(races) > 1 and Race.All in races):
             raise ValueError("Race has both 'All' and other options selected. Please select either 'All' or specific options.")
@@ -357,7 +360,7 @@ class WonderRequest():
         return self
 
 
-    def hispanic_origin(self, *args) -> 'WonderRequest':
+    def hispanic_origin(self, *args) -> 'Request':
         """
         Specify the Hispanic origin options to filter by.
         :param args:        the HispanicOrigin options that the user wants to filter by
@@ -371,7 +374,7 @@ class WonderRequest():
         hispanic_origins = set()
         for arg in args:
             if (type(arg) != HispanicOrigin):
-                raise TypeError("Provided arguments aren't of Hispanic Origin enum type. Please provide arguments of the right type. For reference, check CDCWonderEnums.py")
+                raise TypeError("Provided arguments aren't of Hispanic Origin enum type. Please provide arguments of the right type. For reference, check Wonder/Enums.py")
             hispanic_origins.add(arg.value)
         if (len(hispanic_origins) > 1 and HispanicOrigin.All in hispanic_origins):
             raise ValueError("Hispanic Origin has both 'All' and other options selected. Please select either 'All' or specific options.")
@@ -384,7 +387,7 @@ class WonderRequest():
     #########################################
     #### Chronology
     #########################################
-    def dates(self, *args) -> 'WonderRequest':
+    def dates(self, *args) -> 'Request':
         """
         Specify the dates to filter by. See the Dates class for more information on
         how dates can be specified as either single Year/Month or a range.
@@ -427,7 +430,7 @@ class WonderRequest():
         return self
 
 
-    def weekday(self, *args) -> 'WonderRequest':
+    def weekday(self, *args) -> 'Request':
         """
         Specify weekday options to filter by. Default is *All*.
         :param args:        the Weekday options that the user wants to filter by
@@ -441,7 +444,7 @@ class WonderRequest():
         weekdays = set()
         for arg in args:
             if (type(arg) != Weekday):
-                raise TypeError("Provided arguments aren't of Weekday enum type. Please provide arguments of the right type. For reference, check CDCWonderEnums.py")
+                raise TypeError("Provided arguments aren't of Weekday enum type. Please provide arguments of the right type. For reference, check Wonder/Enums.py")
             weekdays.add(arg.value)
         if (len(weekdays) > 1 and Weekday.All in weekdays):
             raise ValueError("PlaceOfDeath has both 'All' and other options selected. Please select either 'All' or specific options.")
@@ -452,7 +455,7 @@ class WonderRequest():
     #########################################
     #### Miscellaneous
     #########################################
-    def place_of_death(self, *args) -> 'WonderRequest':
+    def place_of_death(self, *args) -> 'Request':
         """
         Specify the Place of Death options to filter by. Default is *All*.
         :param args:        the PlaceOfDeath options that the user wants to filter by
@@ -466,7 +469,7 @@ class WonderRequest():
         place_of_death_options = set()
         for arg in args:
             if (type(arg) != PlaceOfDeath):
-                raise TypeError("Provided arguments aren't of PlaceOfDeath enum type. Please provide arguments of the right type. For reference, check CDCWonderEnums.py")
+                raise TypeError("Provided arguments aren't of PlaceOfDeath enum type. Please provide arguments of the right type. For reference, check Wonder/Enums.py")
             place_of_death_options.add(arg.value)
         if (len(place_of_death_options) > 1 and PlaceOfDeath.All in place_of_death_options):
             raise ValueError("PlaceOfDeath has both 'All' and other options selected. Please select either 'All' or specific options.")
@@ -474,7 +477,7 @@ class WonderRequest():
         return self
 
 
-    def autopsy(self, *args) -> 'WonderRequest':
+    def autopsy(self, *args) -> 'Request':
         """
         Specify the Autopsy options to filter by. Default is *All*.
         :param args: the Autopsy options that the user wants to filter by
@@ -487,7 +490,7 @@ class WonderRequest():
         autopsy_options = set()
         for arg in args:
             if (type(arg) != Autopsy):
-                raise TypeError("Provided arguments aren't of Autopsy enum type. Please provide arguments of the right type. For reference, check CDCWonderEnums.py")
+                raise TypeError("Provided arguments aren't of Autopsy enum type. Please provide arguments of the right type. For reference, check Wonder/Enums.py")
             autopsy_options.add(arg.value)
         if (len(autopsy_options) > 1 and Autopsy.All in autopsy_options):
             raise ValueError("Autopsy has both 'All' and other options selected. Please select either 'All' or specific options.")
@@ -495,7 +498,7 @@ class WonderRequest():
         return self
 
 
-    def cause_of_death(self, *args) -> 'WonderRequest':
+    def cause_of_death(self, *args) -> 'Request':
         """
         """
         # TODO(@joel)
@@ -529,13 +532,13 @@ class WonderRequest():
 
 # Sample code
 if __name__ == '__main__':
-    req = WonderRequest()
-    # req.dates(Dates.range(Year(2001), Year(2003)), Dates.single(YearAndMonth(2005, 4)), Dates.range(YearAndMonth(2003, 6), YearAndMonth(2004, 9)))
-    # req.hispanic_origin(HispanicOrigin.HispanicOrLatino, HispanicOrigin.NotHispanicOrLatino)
-    # req.gender(Gender.Female).race(Race.Asian)
-    # req.weekday(Weekday.Sun, Weekday.Mon, Weekday.Thu)
-    # req.autopsy(Autopsy.Yes)
-    # req.place_of_death(PlaceOfDeath.DecedentHome)
+    req = Request()
+    req.dates(Dates.range(Year(2001), Year(2003)), Dates.single(YearAndMonth(2005, 4)), Dates.range(YearAndMonth(2003, 6), YearAndMonth(2004, 9)))
+    req.hispanic_origin(HispanicOrigin.HispanicOrLatino, HispanicOrigin.NotHispanicOrLatino)
+    req.gender(Gender.Female).race(Race.Asian)
+    req.weekday(Weekday.Sun, Weekday.Mon, Weekday.Thu)
+    req.autopsy(Autopsy.Yes)
+    req.place_of_death(PlaceOfDeath.DecedentHome)
     req.group_by(Grouping.Gender)
 
     response = req.send()
