@@ -1,9 +1,10 @@
 import cdcwonderpy as wonder
+import unittest
 import bs4 as bs
 import pandas as pd
 
 # Testing parsing of response
-class ResponseFormattingTests():
+class ResponseFormattingTests(unittest.TestCase):
 
     # TODO -> make this a static method?
     @classmethod
