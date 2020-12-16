@@ -6,7 +6,6 @@ from WonderResponse import WonderResponse
 from WonderEnums import *
 from Dates import *
 from Ages import *
-from utils import dictToXML
 
 
 class WonderRequest():
