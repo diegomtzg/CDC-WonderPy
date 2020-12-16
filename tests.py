@@ -1,6 +1,4 @@
-import WonderRequest
-import WonderResponse
-from WonderEnums import *
+import wonder 
 import bs4 as bs
 import pandas as pd
 
@@ -23,8 +21,8 @@ class EndToEndTests():
 
     @classmethod
     def test1(cls):
-        req = WonderRequest.WonderRequest()
-        req.group_by(Grouping.Gender)
+        req = wonder.Request()
+        req.group_by(wonder.Grouping.Gender)
         response = req.send()
         res2DList = response.as_2d_list()
 
@@ -49,9 +47,10 @@ class EndToEndTests():
 
     @classmethod
     def test2(cls):
-        req = WonderRequest.WonderRequest()
-        req.group_by(Grouping.HispanicOrigin)
-        req.weekday(Weekday.Sun, Weekday.Mon, Weekday.Tue)
+        pass
+        req = wonder.Request()
+        req.group_by(wonder.Grouping.HispanicOrigin)
+        req.weekday(wonder.Weekday.Sun, wonder.Weekday.Mon, wonder.Weekday.Tue)
         response = req.send()
         resDataFrame = response.as_dataframe()
 
@@ -89,3 +88,4 @@ class EndToEndTests():
 if __name__ == '__main__':
     EndToEndTests.test1()
     EndToEndTests.test2()
+    print("Tests passed!!!")

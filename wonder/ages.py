@@ -1,4 +1,4 @@
-from WonderEnums import Grouping
+from wonder.enums import Grouping
 
 class Ages:
     def __init__(self):
