@@ -3,10 +3,6 @@ from requests import RequestException
 import bs4 as bs
 from collections.abc import Iterable
 
-# from response import *
-# from enums import *
-# from dates import *
-# from ages import *
 from cdcwonderpy.response import *
 from cdcwonderpy.enums import *
 from cdcwonderpy.dates import *

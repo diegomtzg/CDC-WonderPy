@@ -6,7 +6,10 @@ from enum import Enum
 #########################################
 class Grouping(Enum):
     # Demographics
-    AgeGroups = "D76.V5"
+    TenYearAgeGroups = "D76.V5"
+    FiveYearAgeGroups = "D76.V51"
+    SingleYearAgeGroups = "D76.V52"
+
     Gender = "D76.V7"
     HispanicOrigin = "D76.V17"
     Race = "D76.V8"
@@ -22,12 +25,10 @@ class Grouping(Enum):
 
     # Cause single Death
     LeadingCausesOfDeath = "D76.V28"
-    LeadingCausesOfInfantDeath = "D76.V29"
     ICDChapter = "D76.V2-level1"
     ICDSubChapter = "D76.V2-level2"
     CauseOfDeath = "D76.V2-level3"
     ICD10CauseList113 = "D76.V4"
-    # ICD10InfantCauseList130 = "D76.V12"
     InjuryIntent = "D76.V22"
     InjuryMechanismAndAllOtherLeadingCauses = "D76.V23"
     DrugOrAlcoholInducedCauses = "D76.V25"
@@ -48,9 +49,9 @@ class HispanicOrigin(Enum):
 
 class Race(Enum):
     All = "*All*"
-    AmericanIndian = "1002-5"
-    Asian = "A-PI"
-    AfricanAmerican = "2054-5"
+    AmericanIndianOrAlaskanNative = "1002-5"
+    AsianOrPacificIslander = "A-PI"
+    BlackOrAfricanAmerican = "2054-5"
     White = "2106-3"
 
 #########################################
