@@ -78,16 +78,23 @@ class ICD10Code(Enum):
 		parentBegin = parentSplit[0]
 		if len(parentSplit) == 2:
 			parentEnd = parentSplit[1]
+			if len(parentEnd.split('.')) == 1:
+				parentEnd += ".9"
 		else:
 			parentEnd = parentBegin
+			if len(parentBegin.split('.')) == 1:
+				parentEnd += ".9"
+			
 
 		childBegin = childSplit[0]
 		if len(childSplit) == 2:
 			childEnd = childSplit[1]
+			if len(childEnd.split('.')) == 1:
+				childEnd += ".9"
 		else:
 			childEnd = childBegin
-
-		
+			if len(childBegin.split('.')) == 1:
+				childEnd += ".9"
 
 		parentLow = ICD10Code._convert_to_numeric(parentBegin)
 		parentHigh = ICD10Code._convert_to_numeric(parentEnd)
@@ -9723,4 +9730,10 @@ print(ICD10Code._convert_to_numeric(ICD10Code.A16_2.value))
 
 print(ICD10Code._convert_to_numeric(ICD10Code.B08_2.value))
 
-print(ICD10Code.contains(ICD10Code.A, ICD10Code.Y89_9))
+print(ICD10Code.contains(ICD10Code.L80_L98, ICD10Code.L98_9))
+
+print(ICD10Code.contains(ICD10Code.Y70_Y82, ICD10Code.Y73))
+
+print(ICD10Code.contains(ICD10Code.Y89, ICD10Code.Y89))
+
+print(ICD10Code.contains(ICD10Code.Y84_0, ICD10Code.Y83_Y84))

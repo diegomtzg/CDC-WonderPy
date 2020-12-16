@@ -1,4 +1,4 @@
-from CDCWonderEnums import Grouping
+from WonderEnums import Grouping
 
 class Ages:
     def __init__(self):

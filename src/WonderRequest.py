@@ -1,6 +1,7 @@
 import requests
 from requests import RequestException
 import bs4 as bs
+from collections.abc import Iterable
 
 from WonderResponse import WonderResponse
 from WonderEnums import *
@@ -498,8 +499,38 @@ class WonderRequest():
     def cause_of_death(self, *args) -> 'WonderRequest':
         """
         """
-        # TODO(@joel)
-        raise NotImplementedError
+        from ICD10Code import ICD10Code
+        if len(args) == 0:
+            raise ValueError("Method expects at least one ICD10Code")
+
+        flattened = []
+        for arg in args:
+            if isinstance(arg, Iterable):
+                for code in arg:
+                    flattened.append(code)
+            elif isinstance(arg, ICD10Code):
+                flattened.append(arg)
+            else:
+                raise TypeError("All arguments must be either an ICD10Code or an Iterable containing ICD10Codes")
+
+        icd10_params = []
+        shouldBeAdded = True
+        for code in flattened:
+            for accepted_code in icd10_params:
+                if ICD10Code.contains(accepted_code, code):
+                    shouldBeAdded = False
+                    break;
+                elif ICD10Code.contains(code, accepted_code):
+                    icd10_params.remove(accepted_code)
+            
+            if shouldBeAdded:
+                icd10_params.append(code)
+
+        print(icd10_params)
+
+        self._f_parameters["F_D76.V2"] = [ e.value for e in icd10_params ]
+        return self
+
 
     ##################################
     # Private internal helper methods
@@ -530,13 +561,15 @@ class WonderRequest():
 # Sample code
 if __name__ == '__main__':
     req = WonderRequest()
-    # req.dates(Dates.range(Year(2001), Year(2003)), Dates.single(YearAndMonth(2005, 4)), Dates.range(YearAndMonth(2003, 6), YearAndMonth(2004, 9)))
+    req.dates(Dates.range(Year(2001), Year(2003)), Dates.single(YearAndMonth(2005, 4)), Dates.range(YearAndMonth(2003, 6), YearAndMonth(2004, 9)))
+    from ICD10Code import ICD10Code
+    req.cause_of_death(ICD10Code.A32, ICD10Code.F10_F19, ICD10Code.F01_F99, ICD10Code.B65_B83, ICD10Code.K20_K31)
     # req.hispanic_origin(HispanicOrigin.HispanicOrLatino, HispanicOrigin.NotHispanicOrLatino)
     # req.gender(Gender.Female).race(Race.Asian)
     # req.weekday(Weekday.Sun, Weekday.Mon, Weekday.Thu)
     # req.autopsy(Autopsy.Yes)
     # req.place_of_death(PlaceOfDeath.DecedentHome)
-    req.group_by(Grouping.Gender)
+    req.group_by(Grouping.ICDChapter, Grouping.Year)
 
     response = req.send()
     print(response.as_dataframe())
