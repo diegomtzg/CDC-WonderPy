@@ -8,6 +8,10 @@ class WonderResponse():
         self._xml = xml
         self._groupings = groupings
         self._2d_list = None
+        self._df = None
+
+    def __repr__(self) -> str:
+        return self.as_dataframe().to_string()
 
     def as_xml(self) -> str:
         """
@@ -24,12 +28,16 @@ class WonderResponse():
 
         :returns:   Pandas Dataframe containing Response data.
         """
-        if self._2d_list == None:
+        if self._df != None:
+            return self._df
+        elif self._2d_list == None:
             self.as_2d_list()
 
         column_labels = copy.deepcopy(self._groupings) + ["Deaths", "Population", "Crude Rate Per 100,000"]
+        df = pd.DataFrame(data=self._2d_list, columns=column_labels)
         
-        return pd.DataFrame(data=self._2d_list, columns=column_labels)
+        self._df = df
+        return df
 
     def as_2d_list(self) -> typing.List[typing.List]:
         """

@@ -1,62 +1,103 @@
+from CDCWonderEnums import Grouping
+
 class Ages:
     def __init__(self):
-        self._date_set = set()
+        self._age_set = set()
 
     @staticmethod
-    def single(age):
-        result = Dates()
-        if isinstance(timePeriod, Year):
-            for i in range(1, CalendarMonth.NUM_MONTHS+1):
-                result._date_set.add(CalendarMonth(i, timePeriod.get_year()))
-
-        elif isinstance(timePeriod, CalendarMonth):
-            result._date_set.add(timePeriod)
-
+    def Single(age: int):
+        result = Ages()
+        if isinstance(age, int):
+            result._age_set.add(str(age))
         else:
-            raise TypeError("Time period must be either a CalendarMonth or a Year")
+            raise TypeError("Single Age must be an int.")
 
         return result
 
     @staticmethod
-    def range(start_age, end_age):
-        if not (isinstance(beginPeriod, Year) or isinstance(beginPeriod, CalendarMonth)) or not (isinstance(endPeriod, Year) or isinstance(endPeriod, CalendarMonth)):
-            raise TypeError("Time periods must be either CalendarMonths or Years")
-        if (isinstance(beginPeriod, CalendarMonth) and not isinstance(endPeriod, CalendarMonth)) or (isinstance(beginPeriod, Year) and not isinstance(endPeriod, Year)):
-            raise TypeError("Begin period and end period type must match (either both CalendarMonth or both Year)")
+    def Range(start_age, end_age):
+        if not (isinstance(start_age, int) or isinstance(end_age, int)):
+            raise TypeError("Age range start and end must be of type int.")
 
-        if beginPeriod.is_after(endPeriod):
-            raise ValueError("Begin period must be before or equal to end period; Begin: "+str(beginPeriod)+" End: "+str(endPeriod))
+        if end_age < start_age:
+            raise ValueError("Starting age must be before or equal to end age; Start: "+str(start_age)+" End: "+str(end_age))
 
-        result = Dates()
-        if(isinstance(beginPeriod, Year)):
-            for year in range(beginPeriod.get_year(), endPeriod.get_year()+1):
-                for month in range(1, CalendarMonth.NUM_MONTHS+1):
-                    result._date_set.add(CalendarMonth(month, year))
+        result = Ages()
+        for age in range(start_age, end_age+1):
+            result._age_set.add(str(age))
+
+        return result
+
+    def as_list(self):
+        return sorted(list(self._age_set))
+
+    def union(self, other):
+        if not isinstance(other, Ages):
+            raise TypeError("Both objects must be an instance of Ages")
+
+        result = Ages()
+        result._age_set = self._age_set.union(other._age_set)
+        return result
+
+    ###############################
+    ##### Private Methods
+    ###############################
+
+    def _is_valid_age_group(self, age_group_type):
+        try:
+            formatted_grouping = self._as_age_group_type(age_group_type)
+        except:
+            return False
+
+        age_group_size = 0
+        if age_group_type == Grouping.TenYearAgeGroups:
+            age_group_size = 10
+        elif age_group_type == Grouping.FiveYearAgeGroups:
+            age_group_size = 5
         else:
-            curr_year = beginPeriod.get_year()
-            curr_month = beginPeriod.get_month()
-            end_year = endPeriod.get_year()
-            end_month = endPeriod.get_month()
-            while(not (curr_month == end_month and curr_year == end_year)):
-                result._date_set.add(CalendarMonth(curr_month, curr_year))
-                curr_month+=1
-                if(curr_month > CalendarMonth.NUM_MONTHS):
-                    curr_month = 1
-                    curr_year+=1
-            result._date_set.add(CalendarMonth(end_month, end_year))
-        return result
+            age_group_size = 1
 
-    def get_months(self):
-        return list(self._date_set)
+        for block in formatted_grouping:
+            if len(block) != age_group_size:
+                print("A")
+                return False
+            elif block != list(range(block[0], block[-1]+1)):
+                print("B")
+                return False
+            elif age_group_type == Grouping.TenYearAgeGroups and block[0]%10 != 5:
+                print(block)
+                print("C")
+                return False
+            elif age_group_type == Grouping.FiveYearAgeGroups and block[0]%10 not in [0,5]:
+                print("D")
+                return False
 
-    @staticmethod
-    def union(dates1, dates2):
-        if not isinstance(dates1, Dates) or not isinstance(dates2, Dates):
-            raise TypeError("Both objects must be and instance of Dates")
+        return True
 
-        result = Dates()
-        result._date_set = dates1._date_set.union(dates2._date_set)
-        return result
+    def _as_age_group_type(self, age_group_type):
+        ages = self.as_list()
+
+        age_group_size = 0
+        if age_group_type == Grouping.TenYearAgeGroups:
+            age_group_size = 10
+        elif age_group_type == Grouping.FiveYearAgeGroups:
+            age_group_size = 5
+        else:
+            age_group_size = 1
+        
+        groups, curr_block, block_index = [], [], 0
+        for age in ages:
+            curr_block.append(int(age))
+            block_index += 1
+            if len(curr_block) == age_group_size:
+                groups.append(curr_block)
+                curr_block = []
+                block_index = 0
+        
+        if block_index != 0:
+            raise ValueError(f"Invalid Group Size: Cannot group ages by type {age_group_type.name}")
+
+        return groups
 
     def __repr__(self):
-        return str(self.get_months())
+        return str(self.as_list())
