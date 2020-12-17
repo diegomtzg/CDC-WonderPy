@@ -31,15 +31,12 @@ class Response():
 
         :returns:   Pandas Dataframe containing Response data.
         """
-        if self._df != None:
-            return self._df
-        elif self._2d_list == None:
+        if self._2d_list == None:
             self.as_2d_list()
 
         column_labels = copy.deepcopy(self._groupings) + ["Deaths", "Population", "Crude Rate Per 100,000"]
         df = pd.DataFrame(data=self._2d_list, columns=column_labels)
-        
-        self._df = df
+
         return df
 
     def as_2d_list(self) -> typing.List[typing.List]:
@@ -54,9 +51,6 @@ class Response():
 
         :returns List[List]:   A two-dimensional array representing the response data.
         """
-    
-        if self._2d_list != None:
-            return self._2d_list
 
         root = bs.BeautifulSoup(self._xml,"lxml")
         all_records = []
@@ -87,7 +81,6 @@ class Response():
                                             
             row_number += 1
 
-        self._2d_list = all_records
         return all_records
 
     def __eq__(self, other):

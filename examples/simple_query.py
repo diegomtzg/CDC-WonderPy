@@ -9,5 +9,5 @@ if __name__ == '__main__':
         Here, we want to get all the male death occurrences in the database and view
         the result as a Pandas dataframe.
         """
-    response = wonder.Request().gender(Gender.MALE).send()
+    response = wonder.Request().race(Race.AMERICAN_INDIAN_OR_ALASKAN_NATIVE).send()
     print(response.as_dataframe())
