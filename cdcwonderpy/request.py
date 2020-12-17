@@ -270,7 +270,7 @@ class Request():
             b_param_key = "B_" + str(i+1)
             self._b_parameters[b_param_key] = grouping.value
 
-            if grouping.name.endswith("AgeGroups"):
+            if grouping.name.endswith("AGE_GROUPS"):
                 if self.ages != None and not self.ages._is_valid_age_group(grouping):
                     raise ValueError(f"Invalid Age Grouping: Cannot group by {grouping.name} with Ages {self.ages}.")
                 self._o_parameters["O_age"] = grouping.value
