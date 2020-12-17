@@ -57,7 +57,7 @@ class EndToEndTests(unittest.TestCase):
 
         #Check that we get all desired column headings
         columnHeadings = list(resDataFrame.columns)
-        self.assertEqual(columnHeadings[0], "HISPANIC_ORIGIN")
+        self.assertEqual(columnHeadings[0], "Hispanic_origin")
         self.assertEqual(columnHeadings[1], "Deaths")
         self.assertEqual(columnHeadings[2], "Population")
         self.assertEqual(columnHeadings[3], "Crude Rate Per 100,000")
