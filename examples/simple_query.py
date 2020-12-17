@@ -1,3 +1,4 @@
+import setup
 import cdcwonderpy as wonder
 from cdcwonderpy.enums import *
 

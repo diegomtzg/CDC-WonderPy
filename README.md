@@ -16,3 +16,9 @@ To run unit tests, open a terminal in the base directory of the repo and run the
 ```
 python -m unittest
 ```
+
+To run our client code examples located in the "examples" folder, open a terminal in the base directory of the repo and run the command
+```
+python examples/<exampleToRun>.py
+```
+with the angle brackets replaced with the desired example module
