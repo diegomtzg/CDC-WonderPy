@@ -1,5 +1,4 @@
 import typing
-import copy
 import bs4 as bs
 import pandas as pd
 
@@ -10,8 +9,6 @@ class Response():
     def __init__(self, xml, groupings):
         self._xml = xml
         self._groupings = groupings
-        self._2d_list = None
-        self._df = None
 
     def __repr__(self) -> str:
         return self.as_dataframe().to_string()
@@ -19,7 +16,6 @@ class Response():
     def as_xml(self) -> str:
         """
         Return the response data as an XML-formatted String.
-
         :returns:   String representation single Response in XML format.
         """
         return self._xml
@@ -28,15 +24,10 @@ class Response():
         """
         Returns the response data as a formatted Pandas Dataframe with
         column labels corresponding to group_by settings in the Request.
-
         :returns:   Pandas Dataframe containing Response data.
         """
-        if self._2d_list == None:
-            self.as_2d_list()
-
-        column_labels = copy.deepcopy(self._groupings) + ["Deaths", "Population", "Crude Rate Per 100,000"]
-        df = pd.DataFrame(data=self._2d_list, columns=column_labels)
-
+        column_labels = self._groupings + ["Deaths", "Population", "Crude Rate Per 100,000"]
+        df = pd.DataFrame(data=self.as_2d_list(), columns=column_labels)
         return df
 
     def as_2d_list(self) -> typing.List[typing.List]:
@@ -48,10 +39,8 @@ class Response():
         additional 'r' (rowspan) tag which identifies how many rows the value
         should be added. If present, that label will be added to the following
         rows single the data table.
-
         :returns List[List]:   A two-dimensional array representing the response data.
         """
-
         root = bs.BeautifulSoup(self._xml,"lxml")
         all_records = []
         row_number = 0
