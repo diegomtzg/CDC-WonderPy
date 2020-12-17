@@ -20,7 +20,7 @@ class Ages:
         return str(self.as_list())
 
     @staticmethod
-    def Single(age: int) -> Ages:
+    def Single(age: int) -> 'Ages':
         """
         Static method for generating a new Ages instance corresponding to a single age value.
         Valid ages that can be filtered upon range between 1 and 99, inclusive.
@@ -41,7 +41,7 @@ class Ages:
         return result
 
     @staticmethod
-    def Range(start_age: int, end_age: int) -> Ages:
+    def Range(start_age: int, end_age: int) -> 'Ages':
         """
         Static method for generating a new Ages instance corresponding to a range of age values.
         Valid ages that can be filtered upon range between 1 and 99, inclusive.
@@ -73,7 +73,7 @@ class Ages:
         """
         return sorted(list(self._age_set))
 
-    def union(self, other: Ages) -> Ages:
+    def union(self, other: 'Ages') -> 'Ages':
         """
         Method for generating a new Ages instance containing the union of the ages represented by
         the called upon instance and the other passed in instance.
