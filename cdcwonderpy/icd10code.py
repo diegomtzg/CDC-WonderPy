@@ -3,9 +3,11 @@ import pickle
 import re
 from rapidfuzz import fuzz
 import typing
-"""
-"""
+
+
 class ICD10Code(Enum):
+	"""
+	"""
 	@classmethod
 	def description(cls, icd_code : 'ICD10Code') -> str:
 		if not isinstance(icd_code, ICD10Code):
@@ -18,7 +20,7 @@ class ICD10Code(Enum):
 			return ICD10Code.description(icd_code)
 	
 	@classmethod
-	def description_matches(cls, regex : str) -> typing.List['ICD10Code']:
+	def description_matches_regex(cls, regex : str) -> typing.List['ICD10Code']:
 		try:
 			results = []
 			for code in ICD10Code:
@@ -27,7 +29,7 @@ class ICD10Code(Enum):
 			return results
 		except AttributeError:
 			_open_description_map(cls)
-			return ICD10Code.description_matches(regex)
+			return ICD10Code.description_matches_regex(regex)
 
 	@classmethod
 	def description_best_match(cls, description : str) -> 'ICD10Code':
@@ -9722,20 +9724,3 @@ class ICD10Code(Enum):
 	Y89_0 = "Y89.0"
 	Y89_1 = "Y89.1"
 	Y89_9 = "Y89.9"
-
-
-print(ICD10Code._convert_to_numeric(ICD10Code.A00.value))
-
-print(ICD10Code._convert_to_numeric(ICD10Code.A16.value))
-
-print(ICD10Code._convert_to_numeric(ICD10Code.A16_2.value))
-
-print(ICD10Code._convert_to_numeric(ICD10Code.B08_2.value))
-
-print(ICD10Code.contains(ICD10Code.L80_L98, ICD10Code.L98_9))
-
-print(ICD10Code.contains(ICD10Code.Y70_Y82, ICD10Code.Y73))
-
-print(ICD10Code.contains(ICD10Code.Y89, ICD10Code.Y89))
-
-print(ICD10Code.contains(ICD10Code.Y84_0, ICD10Code.Y83_Y84))

@@ -13,10 +13,9 @@ if __name__ == '__main__':
         the deaths that happened on a weekend. We then want to see the results as a
         2D list.
         """
-
-if __name__ == '__main__':
     req = wonder.Request()
     req.group_by(Grouping.GENDER, Grouping.YEAR)
     req.weekday(Weekday.SAT, Weekday.SUN)
+    req.cause_of_death(wonder.ICD10Code.description_best_match("Diseases of the nervous system"))
     response = req.send()
     print(response.as_2d_list())

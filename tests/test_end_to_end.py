@@ -10,6 +10,11 @@ the same parameters gives users the same results.
 """
 # End to end testing
 class EndToEndTests(unittest.TestCase):
+    def test0(self):
+        req = wonder.Request()
+        req.cause_of_death(wonder.ICD10Code.A00)
+        req.send()
+
     def test1(self):
         req = wonder.Request()
         req.group_by(wonder.Grouping.GENDER)

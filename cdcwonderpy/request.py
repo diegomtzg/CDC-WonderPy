@@ -506,7 +506,7 @@ class Request():
         :raises ValueError: if at least one ICD10Code option isn't provided, or if ICD10Code.All is provided with other ICD10Code options
         :raises TypeError: if arguments provided aren't of type ICD10Code
         """
-        from ICD10Code import ICD10Code
+        from cdcwonderpy.icd10code import ICD10Code
 
         flattened = []
         for arg in args:
