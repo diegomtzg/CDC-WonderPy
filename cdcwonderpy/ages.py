@@ -13,14 +13,32 @@ class Ages:
     
     def __repr__(self) -> str:
         """
-        Returns the string representation of the Ages instance as a sorted 2D list.
+        Returns the string representation of the Ages instance as a sorted list with ranges extracted
 
         @returns:   String representation of the Ages instance.
         """
-        return str(self.as_list())
+        result = []
+        beginAge = None
+        lastAge = None
+        for age in self.as_list():
+            if lastAge == None or lastAge+1 != age:
+                if beginAge != None:
+                    if lastAge == beginAge:
+                        result.append(str(beginAge))
+                    else:
+                        result.append(str(beginAge)+"-"+str(lastAge))
+                beginAge = age
+            lastAge = age
+        
+        if lastAge == beginAge:
+            result.append(str(beginAge))
+        else:
+            result.append(str(beginAge)+"-"+str(lastAge))
+
+        return str(result)
 
     @staticmethod
-    def Single(age: int) -> 'Ages':
+    def single(age: int) -> 'Ages':
         """
         Static method for generating a new Ages instance corresponding to a single age value.
         Valid ages that can be filtered upon range between 1 and 99, inclusive.
@@ -36,12 +54,12 @@ class Ages:
         elif age < 1 or age > 99:
             raise ValueError(f"Valid age values range from 1 to 99, inclusive, and user inputted: {age}")
         else:
-            result._age_set.add(str(age))
+            result._age_set.add(age)
 
         return result
 
     @staticmethod
-    def Range(start_age: int, end_age: int) -> 'Ages':
+    def range(start_age: int, end_age: int) -> 'Ages':
         """
         Static method for generating a new Ages instance corresponding to a range of age values.
         Valid ages that can be filtered upon range between 1 and 99, inclusive.
@@ -61,7 +79,7 @@ class Ages:
 
         result = Ages()
         for age in range(start_age, end_age+1):
-            result._age_set.add(str(age))
+            result._age_set.add(age)
 
         return result
 
@@ -168,7 +186,7 @@ class Ages:
         
         groups, curr_block, block_index = [], [], 0
         for age in ages:
-            curr_block.append(int(age))
+            curr_block.append(age)
             block_index += 1
             if len(curr_block) == age_group_size:
                 groups.append(curr_block)

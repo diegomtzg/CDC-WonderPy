@@ -13,6 +13,8 @@ class EndToEndTests(unittest.TestCase):
     def test0(self):
         req = wonder.Request()
         req.cause_of_death(wonder.ICD10Code.A00)
+        req.dates(wonder.Dates.range(wonder.dates.Year(2010), wonder.dates.Year(2013)), wonder.Dates.single(wonder.dates.YearAndMonth(2015, 7)))
+        req.age_groups(wonder.Ages.single(27), wonder.Ages.range(50, 70))
         req.send()
 
     def test1(self):

@@ -152,6 +152,9 @@ class ICD10Code(Enum):
         with open(os.path.join('resources', 'ICD10CodeToLabels.pickle'), 'rb') as f:
             cls.codeToLabels = pickle.load(f)
 
+    def __str__(self):
+        return self.__repr__()
+
     def __repr__(self):
         return self.value
 

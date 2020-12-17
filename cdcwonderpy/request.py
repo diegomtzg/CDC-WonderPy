@@ -1,5 +1,6 @@
 from requests import RequestException, post
 import bs4 as bs
+from enum import Enum
 from collections.abc import Iterable
 
 from cdcwonderpy.response import *
@@ -287,6 +288,7 @@ class Request():
                 self._v_parameters[f"V_{grouping.value}"] = formatted_age_groups
             else:
                 self._group_by_column_names.append(grouping.name)
+        self._parameter_data["Grouped by"] = groupings
 
         return self
 
@@ -313,9 +315,10 @@ class Request():
             else:
                 ages = ages.union(arg)
         
-        self._v_parameters["V_D76.V52"] = ages.as_list()
+        self._v_parameters["V_D76.V52"] = [ str(e) for e in ages.as_list() ]
         
         self.ages = ages
+        self._parameter_data["Ages"] = [ages]
         return self
 
 
@@ -433,6 +436,7 @@ class Request():
         date_params.update(curr_year_set)
         date_params_list = [str(e) for e in date_params]
         self._f_parameters["F_D76.V1"] = sorted(date_params_list)
+        self._parameter_data["Dates"] = date_params
         return self
 
 
@@ -545,6 +549,7 @@ class Request():
                 icd10_params.append(code)
 
         self._f_parameters["F_D76.V2"] = [ e.value for e in icd10_params ]
+        self._parameter_data["ICD-10 Codes"] = icd10_params
         return self
 
 
@@ -574,10 +579,16 @@ class Request():
         return parameterString
     
     def __repr__(self):
-        resStr = "*Request Object*"
+        mapPrint = dict()
         for (k,v) in self._parameter_data.items():
-            resStr = resStr +  "\n" + str(k) + " : "
+            newVal = []
             for val in v:
-                resStr += val.name + ", "
-            resStr = resStr[:-2]
-        return str(resStr)
+                if isinstance(val, Enum):
+                    newVal.append(val.name)
+                elif isinstance(val, Ages):
+                    newVal = val
+                else:
+                    newVal.append(val)
+            mapPrint[k] = newVal
+        return "Request(" + str(mapPrint) + ")"
+        # return "Request("+str(self._parameter_data)+")"
