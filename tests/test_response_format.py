@@ -93,7 +93,7 @@ class ResponseFormattingTests(unittest.TestCase):
 
     def test_as_dataframe(self):
         response = wonder.Response(ResponseFormattingTests.sample_xml, ["Year", "Race"])
-        expected_result = """Year                              Race  Deaths  Population  Crude Rate Per 100,000
+        expected_result = """    Year                              Race  Deaths  Population  Crude Rate Per 100,000
 0   1999  American Indian or Alaska Native   210.0   1375207.0               15.270428
 1   1999         Asian or Pacific Islander    73.0   5813970.0                1.255596
 2   1999         Black or African American  1176.0  17026405.0                6.906919
@@ -105,9 +105,8 @@ class ResponseFormattingTests(unittest.TestCase):
 77  2018         Asian or Pacific Islander   164.0   9953048.0                1.647736
 78  2018         Black or African American   742.0  20132411.0                3.685599
 79  2018                             White  5371.0  97734219.0                5.495516
-        """
 
-        # print(response)
-        self.assertEquals(True, True)
-        # self.assertEquals(str(response), expected_result)
+[80 rows x 5 columns]"""
+        
+        self.assertEquals(str(response), expected_result)
         
