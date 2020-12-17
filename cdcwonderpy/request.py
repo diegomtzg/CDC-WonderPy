@@ -287,7 +287,7 @@ class Request():
 
                 self._v_parameters[f"V_{grouping.value}"] = formatted_age_groups
             else:
-                self._group_by_column_names.append(grouping.name)
+                self._group_by_column_names.append(grouping.name.capitalize())
         self._parameter_data["Grouped by"] = groupings
 
         return self
