@@ -190,6 +190,9 @@ class Request():
         # Ages to filter query by, if any.
         self.ages = None
 
+        # For string representation of object
+        self._parameter_data = dict()
+
 
     def send(self) -> 'Response':
         """
@@ -335,6 +338,7 @@ class Request():
         if (len(gender_options) > 1 and Gender.ALL in gender_options):
             raise ValueError("Gender has both 'All Genders' and other options selected. Please select either 'All' or specific options.")
         self._v_parameters["V_D76.V7"] = list(gender_options)
+        self._parameter_data["Gender"] = list(set( list([arg for arg in args])))
         return self
 
 
@@ -357,6 +361,7 @@ class Request():
         if (len(races) > 1 and Race.ALL in races):
             raise ValueError("Race has both 'All' and other options selected. Please select either 'All' or specific options.")
         self._v_parameters["V_D76.V8"] = list(races)
+        self._parameter_data["Race"] = list(set( list([arg for arg in args])))
         return self
 
 
@@ -381,6 +386,7 @@ class Request():
         if (len(hispanic_origins) > 1 and HispanicOrigin.NOT_STATED in hispanic_origins):
             raise ValueError("Hispanic Origin has both 'All' and other options selected. Please select either 'All' or specific options.")
         self._v_parameters["V_D76.V17"] = list(hispanic_origins)
+        self._parameter_data["Hispanic Origin"] = list(set( list([arg for arg in args])))
         return self
 
 
@@ -449,6 +455,7 @@ class Request():
         if (len(weekdays) > 1 and Weekday.ALL in weekdays):
             raise ValueError("PlaceOfDeath has both 'All' and other options selected. Please select either 'All' or specific options.")
         self._v_parameters["V_D76.V24"] = list(weekdays)
+        self._parameter_data["Weekday"] = list(set( list([arg for arg in args])))
         return self
 
 
@@ -495,6 +502,7 @@ class Request():
         if (len(autopsy_options) > 1 and Autopsy.ALL in autopsy_options):
             raise ValueError("Autopsy has both 'All' and other options selected. Please select either 'All' or specific options.")
         self._v_parameters["V_D76.V20"] = list(autopsy_options)
+        self._parameter_data["Autopsy"] = list(set( list([arg for arg in args])))
         return self
 
 
@@ -562,3 +570,12 @@ class Request():
             parameterString += "</parameter>\n"
 
         return parameterString
+    
+    def __repr__(self):
+        resStr = "*Request Object*"
+        for (k,v) in self._parameter_data.items():
+            resStr = resStr +  "\n" + str(k) + " : "
+            for val in v:
+                resStr += val.name + ", "
+            resStr = resStr[:-2]
+        return str(resStr)
