@@ -16,8 +16,8 @@ class ICD10Code(Enum):
 		try:
 			return cls.codeToLabels[icd_code]
 		except AttributeError:
-			_open_description_map(cls)
-			return ICD10Code.description(icd_code)
+			cls._open_description_map()
+			return cls.description(icd_code)
 	
 	@classmethod
 	def description_matches_regex(cls, regex : str) -> typing.List['ICD10Code']:
@@ -28,8 +28,8 @@ class ICD10Code(Enum):
 					results.append(code)
 			return results
 		except AttributeError:
-			_open_description_map(cls)
-			return ICD10Code.description_matches_regex(regex)
+			cls._open_description_map()
+			return cls.description_matches_regex(regex)
 
 	@classmethod
 	def description_best_match(cls, description : str) -> 'ICD10Code':
@@ -43,8 +43,8 @@ class ICD10Code(Enum):
 					bestCode = code
 			return bestCode
 		except AttributeError:
-			_open_description_map(cls)
-			return ICD10Code.description_best_match(description)
+			cls._open_description_map()
+			return cls.description_best_match(description)
 
 	@classmethod
 	def description_matches_above_threshold(cls, description : str, thresh : float = 90) -> typing.List['ICD10Code']:
@@ -56,8 +56,8 @@ class ICD10Code(Enum):
 					results.append(code)
 			return results
 		except AttributeError:
-			_open_description_map(cls)
-			return ICD10Code.description_matches_above_threshold(description, thresh)
+			cls._open_description_map()
+			return cls.description_matches_above_threshold(description, thresh)
 
 	@staticmethod
 	def contains(parent : 'ICD10Code', child : 'ICD10Code') -> bool:
