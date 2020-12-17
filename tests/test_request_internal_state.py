@@ -6,6 +6,9 @@ import bs4 as bs
 import pandas as pd
 import re
 
+def parse_as_int(xml):
+    return 7
+
 # Testing parsing of response
 class RequestInternalTest(unittest.TestCase):
     def test_icd10_methods(cls):
@@ -22,3 +25,7 @@ class RequestInternalTest(unittest.TestCase):
         assert(ICD10Code.description(ICD10Code.G00_G98) == "Diseases of the nervous system")
         assert((len(ICD10Code.description_matches_above_threshold("Kidney"))) == 44)
         assert(len(ICD10Code.description_matches_regex("disease.*( ear(\W+|$)| throat(\W+|$))", re.I)) == 7)
+
+    def test_response_obj_custom(cls):
+        resp = wonder.Response("HI YASS QUEEN", None)
+        assert(resp.as_custom(parse_as_int) == 7)

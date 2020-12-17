@@ -2,6 +2,8 @@ import typing
 import bs4 as bs
 import pandas as pd
 
+T = typing.TypeVar('T')
+
 class Response():
     """
     Immutable representation of the response returned from the Wonder HTTP endpoint.
@@ -12,6 +14,15 @@ class Response():
 
     def __repr__(self) -> str:
         return self.as_dataframe().to_string()
+
+    def as_custom(self, f : typing.Callable[[str], T]) -> T:
+        """
+        Use a custom function provided by the user to parse the xml data and return the result
+        :param f:   the user-defined function to call to parse the xml data
+        :returns:   the return value of the user-defined parsing function
+        """
+        return f(self._xml)
+
 
     def as_xml(self) -> str:
         """
