@@ -41,6 +41,7 @@ class ICD10Code(Enum):
         :param flags:   the regex flags to provide to the search function, default is 0 (no flags)
         :returns:       a list of ICD10Codes whose descriptions match the given string
         """
+        #print(flags)
         try:
             results = []
             for code in ICD10Code:
@@ -49,7 +50,7 @@ class ICD10Code(Enum):
             return results
         except AttributeError:
             cls._open_description_map()
-            return cls.description_matches_regex(regex)
+            return cls.description_matches_regex(regex, flags)
 
     @classmethod
     def description_best_match(cls, description : str) -> 'ICD10Code':

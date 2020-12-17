@@ -18,7 +18,7 @@ class Response():
     def as_custom(self, f : typing.Callable[[str], T]) -> T:
         """
         Use a custom function provided by the user to parse the xml data and return the result
-        :param f:   the user-defined function to call to parse the xml data
+        :param f:   the user-defined function to call to parse the xml data. Function should take in raw XML string and compute any result
         :returns:   the return value of the user-defined parsing function
         """
         return f(self._xml)

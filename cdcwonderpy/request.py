@@ -531,7 +531,7 @@ class Request():
                 flattened.append(arg)
             else:
                 raise TypeError("All arguments must be either an ICD10Code or an Iterable containing ICD10Codes")
-
+        
         if len(flattened) == 0:
             raise ValueError("Method expects at least one ICD10Code")
 

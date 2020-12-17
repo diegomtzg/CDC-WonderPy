@@ -1,3 +1,4 @@
+import setup
 import cdcwonderpy as wonder
 from cdcwonderpy.dates import *
 from cdcwonderpy.ages import *
