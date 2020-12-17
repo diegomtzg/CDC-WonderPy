@@ -11,7 +11,7 @@ class Request():
     """
     * A wrapper around the CDC Wonder REST API, specific to the Underlying Cause of Death Dataset (D76).
     * This API provides similar access to the database, but removes the need to specify unnecessary
-    * parameters, renames them so that they're easier to use and provides a utility class called
+    * parameters, renames them so that they are easier to use and provides a utility class called
     * Response that contains useful data transformation methods to analyze the data in
     * different formats.
     *
@@ -276,7 +276,7 @@ class Request():
                 # Modify the TenYear, FiveYear, SingleYear AgeGroups to contain their expected enums
                 formatted_age_groups = []
                 for block in self.ages._as_age_group_type(grouping):
-                    if grouping == Grouping.SingleYearAgeGroups:
+                    if grouping == Grouping.SINGLE_YEAR_AGE_GROUPS:
                         formatted_age_groups.append(str(block[0]))
                     else:
                         formatted_age_groups.append(f"{block[0]}-{block[-1]}")
@@ -296,7 +296,7 @@ class Request():
         Specify which age group options to filter by.
         :param args:        the age group options that the user wants to filter by
         :returns:           self
-        :raises TypeError:  if arguments provided aren't of type Gender
+        :raises TypeError:  if arguments provided are not of type Gender
         """
         if (len(args) == 0):
             raise ValueError("Method expects at least one Age Group value.")
@@ -321,16 +321,16 @@ class Request():
         Specify which Gender option to filter by.
         :param args:      the gender options that the user wants to filter by
         :returns:           self
-        :raises ValueError: if at least one race isn't provided or if Gender.All
+        :raises ValueError: if at least one race is not provided or if Gender.All
         is provided with other Gender options.
-        :raises TypeError:  if arguments provided aren't of type Gender
+        :raises TypeError:  if arguments provided are not of type Gender
         """
         if (len(args) == 0):
             raise ValueError("Method expects at least one Gender value.")
         gender_options = set()
         for arg in args:
             if (type(arg) != Gender):
-                raise TypeError("Provided arguments aren't of Gender enum type. Please provide arguments of the right type. For reference, check cdcwonderpy/enums.py")
+                raise TypeError("Provided arguments are not of Gender enum type. Please provide arguments of the right type. For reference, check cdcwonderpy/enums.py")
             gender_options.add(arg.value)
         if (len(gender_options) > 1 and Gender.ALL in gender_options):
             raise ValueError("Gender has both 'All Genders' and other options selected. Please select either 'All' or specific options.")
@@ -343,16 +343,16 @@ class Request():
         Specify the Race options to filter by.
         :param args:         the race options that the user wants to filter by
         :returns:            self
-        :raises: ValueError: if at least one race isn't provided or if Race.All
+        :raises: ValueError: if at least one race is not provided or if Race.All
                              is provided with other Race options
-        :raises TypeError:   if arguments provided aren't of type Race
+        :raises TypeError:   if arguments provided are not of type Race
         """
         if (len(args) == 0):
             raise ValueError("Method expects at least one Race value.")
         races = set()
         for arg in args:
             if (type(arg) != Race):
-                raise TypeError("Provided arguments aren't of race enum type. Please provide arguments of the right type. For reference, check cdcwonderpy/enums.py")
+                raise TypeError("Provided arguments are not of race enum type. Please provide arguments of the right type. For reference, check cdcwonderpy/enums.py")
             races.add(arg.value)
         if (len(races) > 1 and Race.ALL in races):
             raise ValueError("Race has both 'All' and other options selected. Please select either 'All' or specific options.")
@@ -365,16 +365,16 @@ class Request():
         Specify the Hispanic origin options to filter by.
         :param args:        the HispanicOrigin options that the user wants to filter by
         :returns:           self
-        :raises ValueError: if at least one HispanicOrigin isn't provided, or if HispanicOrigin.All
+        :raises ValueError: if at least one HispanicOrigin is not provided, or if HispanicOrigin.All
                             is provided with other HispanicOrigin options
-        :raises TypeError:  if arguments provided aren't of type Race
+        :raises TypeError:  if arguments provided are not of type Race
         """
         if (len(args) == 0):
             raise ValueError("Method expects at least one HispanicOrigin value.")
         hispanic_origins = set()
         for arg in args:
             if (type(arg) != HispanicOrigin):
-                raise TypeError("Provided arguments aren't of Hispanic Origin enum type. Please provide arguments of the right type. For reference, check cdcwonderpy/enums.py")
+                raise TypeError("Provided arguments are not of Hispanic Origin enum type. Please provide arguments of the right type. For reference, check cdcwonderpy/enums.py")
             hispanic_origins.add(arg.value)
         if (len(hispanic_origins) > 1 and HispanicOrigin.ALL in hispanic_origins):
             raise ValueError("Hispanic Origin has both 'All' and other options selected. Please select either 'All' or specific options.")
@@ -393,9 +393,9 @@ class Request():
         how dates can be specified as either single Year/Month or a range.
         :param args:        a list of either of dates of ranges of dates to filter by
         :returns:           self
-        :raises ValueError: if at least one Date isn't provided, or if the specified date is
+        :raises ValueError: if at least one Date is not provided, or if the specified date is
                             outside of 1999 - 2018 (range of the data).
-        :raises TypeError:  if arguments provided aren't of type Dates
+        :raises TypeError:  if arguments provided are not of type Dates
         """
         if len(args) == 0:
             raise ValueError("Method expects at least one value specifying the desired dates")
@@ -435,16 +435,16 @@ class Request():
         Specify weekday options to filter by. Default is *All*.
         :param args:        the Weekday options that the user wants to filter by
         :returns:           self
-        :raises ValueError: if at least one Weekday option isn't provided, or if
+        :raises ValueError: if at least one Weekday option is not provided, or if
                             Weekday.All is provided with other Weekday options
-        :raises TypeError:  if arguments provided aren't of type Weekday
+        :raises TypeError:  if arguments provided are not of type Weekday
         """
         if (len(args) == 0):
             raise ValueError("Method expects at least one Weekday value.")
         weekdays = set()
         for arg in args:
             if (type(arg) != Weekday):
-                raise TypeError("Provided arguments aren't of Weekday enum type. Please provide arguments of the right type. For reference, check cdcwonderpy/enums.py")
+                raise TypeError("Provided arguments are not of Weekday enum type. Please provide arguments of the right type. For reference, check cdcwonderpy/enums.py")
             weekdays.add(arg.value)
         if (len(weekdays) > 1 and Weekday.ALL in weekdays):
             raise ValueError("PlaceOfDeath has both 'All' and other options selected. Please select either 'All' or specific options.")
@@ -460,16 +460,16 @@ class Request():
         Specify the Place of Death options to filter by. Default is *All*.
         :param args:        the PlaceOfDeath options that the user wants to filter by
         :returns:           self
-        :raises ValueError: if at least one PlaceOfDeath option isn't provided, or if PlaceOfDeath.All
+        :raises ValueError: if at least one PlaceOfDeath option is not provided, or if PlaceOfDeath.All
                             is provided with other PlaceOfDeath options
-        :raises TypeError:  if arguments provided aren't of type PlaceOfDeath
+        :raises TypeError:  if arguments provided are not of type PlaceOfDeath
         """
         if (len(args) == 0):
             raise ValueError("Method expects at least one Place of Death value.")
         place_of_death_options = set()
         for arg in args:
             if (type(arg) != PlaceOfDeath):
-                raise TypeError("Provided arguments aren't of PlaceOfDeath enum type. Please provide arguments of the right type. For reference, check cdcwonderpy/enums.py")
+                raise TypeError("Provided arguments are not of PlaceOfDeath enum type. Please provide arguments of the right type. For reference, check cdcwonderpy/enums.py")
             place_of_death_options.add(arg.value)
         if (len(place_of_death_options) > 1 and PlaceOfDeath.ALL in place_of_death_options):
             raise ValueError("PlaceOfDeath has both 'All' and other options selected. Please select either 'All' or specific options.")
@@ -482,15 +482,15 @@ class Request():
         Specify the Autopsy options to filter by. Default is *All*.
         :param args: the Autopsy options that the user wants to filter by
         :returns: self
-        :raises ValueError: if at least one Autopsy option isn't provided, or if Autopsy.All is provided with other Autopsy options
-        :raises TypeError: if arguments provided aren't of type Autopsy
+        :raises ValueError: if at least one Autopsy option is not provided, or if Autopsy.All is provided with other Autopsy options
+        :raises TypeError: if arguments provided are not of type Autopsy
         """
         if (len(args) == 0):
             raise ValueError("Method expects at least one Autopsy value.")
         autopsy_options = set()
         for arg in args:
             if (type(arg) != Autopsy):
-                raise TypeError("Provided arguments aren't of Autopsy enum type. Please provide arguments of the right type. For reference, check cdcwonderpy/enums.py")
+                raise TypeError("Provided arguments are not of Autopsy enum type. Please provide arguments of the right type. For reference, check cdcwonderpy/enums.py")
             autopsy_options.add(arg.value)
         if (len(autopsy_options) > 1 and Autopsy.ALL in autopsy_options):
             raise ValueError("Autopsy has both 'All' and other options selected. Please select either 'All' or specific options.")
@@ -503,8 +503,8 @@ class Request():
         Specify ICD10Code objects to filter by. Default is *All*
         :param args: the ICD10Code options that the user wants to filter by
         :returns: self
-        :raises ValueError: if at least one ICD10Code option isn't provided, or if ICD10Code.All is provided with other ICD10Code options
-        :raises TypeError: if arguments provided aren't of type ICD10Code
+        :raises ValueError: if at least one ICD10Code option is not provided, or if ICD10Code.All is provided with other ICD10Code options
+        :raises TypeError: if arguments provided are not of type ICD10Code
         """
         from ICD10Code import ICD10Code
 
