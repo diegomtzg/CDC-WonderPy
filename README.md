@@ -12,10 +12,12 @@ pip install -r requirements.txt
 
 The entire API is contained in the folder cdcwonderpy, which is a python package that can be imported from python modules in the base in directory of the repo. For example, you could create a new program "wonder_example.py" in the base directory of this repo and should be able to import the cdcwonderpy library. See the examples folder for what this could look like.
 
-To run unit tests, open a terminal in the base directory of the repo and run the command
+To run all unit tests, open a terminal in the base directory of the repo and run the command
 ```
 python -m unittest
 ```
+
+To run specific tests, run `python -m unittest tests/<testToRun>.py` from the top level directory with the angle brackets replaced with the desired test module.
 
 To run our client code examples located in the "examples" folder, open a terminal in the base directory of the repo and run the command
 ```
