@@ -194,8 +194,8 @@ class Request():
     def send(self) -> 'Response':
         """
         Sends this request to the CDC Wonder API endpoint and returns the response as a Response.
-        :returns Response: represents the response of the server
-        :raises RequestException: when the server responds with an error (see exception message for details).
+        :returns Response:          represents the response of the server
+        :raises RequestException:   when the server responds with an error (see exception message for details).
         """
         request_xml = "<request-parameters>\n"
         request_xml += self._dictToXML({"accept_datause_restrictions": "true"})
@@ -389,9 +389,9 @@ class Request():
     #########################################
     def dates(self, *args) -> 'Request':
         """
-        Specify the dates to filter by. See the Dates class for more information on
-        how dates can be specified as either single Year/Month or a range.
-        :param args:        a list of either of dates of ranges of dates to filter by
+        Specify the dates to filter by. Default is no date filter. See the Dates class for more information on
+        how dates can be specified as either single Year/Month or a range. Overlapping sets of dates will be unioned together
+        :param args:        one or Dates objects containing the set of dates to use to filter the response
         :returns:           self
         :raises ValueError: if at least one Date is not provided, or if the specified date is
                             outside of 1999 - 2018 (range of the data).
@@ -480,10 +480,10 @@ class Request():
     def autopsy(self, *args) -> 'Request':
         """
         Specify the Autopsy options to filter by. Default is *All*.
-        :param args: the Autopsy options that the user wants to filter by
-        :returns: self
+        :param args:        the Autopsy options that the user wants to filter by
+        :returns:           self
         :raises ValueError: if at least one Autopsy option is not provided, or if Autopsy.All is provided with other Autopsy options
-        :raises TypeError: if arguments provided are not of type Autopsy
+        :raises TypeError:  if arguments provided are not of type Autopsy
         """
         if (len(args) == 0):
             raise ValueError("Method expects at least one Autopsy value.")
@@ -500,11 +500,13 @@ class Request():
 
     def cause_of_death(self, *args) -> 'Request':
         """
-        Specify ICD10Code objects to filter by. Default is *All*
-        :param args: the ICD10Code options that the user wants to filter by
-        :returns: self
-        :raises ValueError: if at least one ICD10Code option is not provided, or if ICD10Code.All is provided with other ICD10Code options
-        :raises TypeError: if arguments provided are not of type ICD10Code
+        Specify ICD-10 codes that represent the cause of death to filter by. Default is no filter on cause of death.
+        See the ICD10Code class for more information on how to specify desired causes of death.
+        Can provide either individual ICD10Codes or lists of ICD10Codes to include.
+        :param args:        one or more ICD10Codes or list of ICD10Codes to filter by
+        :returns:           self
+        :raises ValueError: if at least one ICD10Code option is not provided
+        :raises TypeError:  if all arguments provided are not either ICD10Codes or lists of ICD10Codes
         """
         from cdcwonderpy.icd10code import ICD10Code
 
@@ -525,10 +527,10 @@ class Request():
         shouldBeAdded = True
         for code in flattened:
             for accepted_code in icd10_params:
-                if ICD10Code.contains(accepted_code, code):
+                if accepted_code.contains(code):
                     shouldBeAdded = False
                     break
-                elif ICD10Code.contains(code, accepted_code):
+                elif code.contains(accepted_code):
                     icd10_params.remove(accepted_code)
             
             if shouldBeAdded:

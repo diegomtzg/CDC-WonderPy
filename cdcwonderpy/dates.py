@@ -43,9 +43,11 @@ class Dates:
         :raises ValueError:     ValueError if the beginPeriod is stricly after the endPeriod
         :returns:               a new Date object containing all months from beginPeriod to endPeriod
         """
-        if not (isinstance(beginPeriod, Year) or isinstance(beginPeriod, YearAndMonth)) or not (isinstance(endPeriod, Year) or isinstance(endPeriod, YearAndMonth)):
+        if not (isinstance(beginPeriod, Year) or isinstance(beginPeriod, YearAndMonth)) or \
+                            not (isinstance(endPeriod, Year) or isinstance(endPeriod, YearAndMonth)):
             raise TypeError("Time periods must be either CalendarMonths or Years")
-        if (isinstance(beginPeriod, YearAndMonth) and not isinstance(endPeriod, YearAndMonth)) or (isinstance(beginPeriod, Year) and not isinstance(endPeriod, Year)):
+        if (isinstance(beginPeriod, YearAndMonth) and not isinstance(endPeriod, YearAndMonth)) or \
+                            (isinstance(beginPeriod, Year) and not isinstance(endPeriod, Year)):
             raise TypeError("Begin period and end period type must match (either both YearAndMonth or both Year)")
 
         if beginPeriod.is_after(endPeriod):
@@ -173,7 +175,8 @@ class YearAndMonth:
         :returns:           a new YearAndMonth object that represents the given year and month
         """
         if not isinstance(month, int) or not isinstance(year, int):
-            raise TypeError("YearAndMonth must be constructed using an integer representation for both the month and year. For example, July 1998 would be constructed as YearAndMonth(7, 1998): "+str(month)+", "+str(year))
+            raise TypeError("YearAndMonth must be constructed using an integer representation for both the month" \
+                "and year. For example, July 1998 would be constructed as YearAndMonth(7, 1998): "+str(month)+", "+str(year))
 
         if month <= 0 or month > YearAndMonth.NUM_MONTHS:
             raise ValueError("Month parameter must be between 1 and 12 (inclusive): "+str(month))

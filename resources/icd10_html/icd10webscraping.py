@@ -7,8 +7,8 @@ import os
 
 # python script for getting all ICD10 codes out of HTML files (it also replaces the labels on those that are cut off)
 
-if not os.path.isfile('..\\resources\\ICD10CodeToLabels.pickle'):
-    columns = bs.BeautifulSoup(open("..\\resources\\allICD10Codes.html"), "html.parser").find_all((lambda tag: tag.name == 'td' \
+if not os.path.isfile('..\\ICD10CodeToLabels.pickle'):
+    columns = bs.BeautifulSoup(open("allICD10Codes.html"), "html.parser").find_all((lambda tag: tag.name == 'td' \
                                                                                 and tag.get('class') == ['line-number'] \
                                                                                 and int(tag.get('value')) > 1550 \
                                                                                 and int(tag.get('value')) < 11153))
@@ -16,7 +16,7 @@ if not os.path.isfile('..\\resources\\ICD10CodeToLabels.pickle'):
     codeToLabels = dict()
 
     print("get All codes...")
-    icdWeb = bs.BeautifulSoup(open("..\\resources\\ICD10Codes.html"), "html.parser").find_all('a', {'class':'ygtvlabel'})
+    icdWeb = bs.BeautifulSoup(open("ICD10Codes.html"), "html.parser").find_all('a', {'class':'ygtvlabel'})
     codeToDescript = dict()
     for webObj in icdWeb:
         text = webObj.get_text(separator="\n").strip().split('\n')
@@ -48,14 +48,12 @@ if not os.path.isfile('..\\resources\\ICD10CodeToLabels.pickle'):
                 label = re.findall('\((.*)\)', td.text)[0]
             codeToLabels[code] = label
 
-    with open('..\\resources\\ICD10CodeToLabels.pickle', 'wb') as handle:
+    with open('..\\ICD10CodeToLabels.pickle', 'wb') as handle:
         pickle.dump(codeToLabels, handle)
 
 else:
-    with open('..\\resources\\ICD10CodeToLabels.pickle', 'rb') as handle:
+    with open('..\\ICD10CodeToLabels.pickle', 'rb') as handle:
         codeToLabels = pickle.load(handle)
 
-with open('..\\resources\\ICD10Codes.py', 'w') as f:
-    for (k, v) in codeToLabels.items():
-        print(k.replace(".", "_").replace("-", "_").replace("*","") + ": "+v)
-        f.write(k.replace(".", "_").replace("-", "_").replace("*","")+" = "+"\""+k+"\""+"\n")
+for (k, v) in codeToLabels.items():
+        print(k+" : "+v)
