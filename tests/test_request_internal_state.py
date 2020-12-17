@@ -1,5 +1,5 @@
 import cdcwonderpy as wonder
-from cdcwonderpy.icd10code import *
+from cdcwonderpy.icd10code import ICD10Code
 import unittest
 import math
 import bs4 as bs

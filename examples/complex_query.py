@@ -1,5 +1,6 @@
 import cdcwonderpy as wonder
 from cdcwonderpy.enums import *
+from cdcwonderpy.icd10code import ICD10Code
 
 """
     Example of a query with multiple levels of complexity. It includes formatting
@@ -15,6 +16,6 @@ from cdcwonderpy.enums import *
 req = wonder.Request()
 req.group_by(Grouping.GENDER, Grouping.YEAR)
 req.weekday(Weekday.SAT, Weekday.SUN)
-req.cause_of_death(wonder.ICD10Code.description_best_match("Diseases of the nervous system"))
+req.cause_of_death(ICD10Code.description_best_match("Diseases of the nervous system"))
 response = req.send()
 print(response.as_2d_list())

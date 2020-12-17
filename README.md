@@ -1,7 +1,7 @@
 # CDCWonderPy
 
 ### Project report
-The link the final project report is [here](https://docs.google.com/document/d/1P3UFiE-uWBVhwtNX628DYGbVvB_h-R51hyMhV3Vm3xA/edit?usp=sharing)
+The link the final project report is in the base directory of this repo
 
 
 ### Running locally

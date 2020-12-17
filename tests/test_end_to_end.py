@@ -1,4 +1,8 @@
 import cdcwonderpy as wonder
+from cdcwonderpy.dates import *
+from cdcwonderpy.ages import *
+from cdcwonderpy.icd10code import *
+from cdcwonderpy.enums import *
 import unittest
 
 """
@@ -12,14 +16,14 @@ the same parameters gives users the same results.
 class EndToEndTests(unittest.TestCase):
     def test0(self):
         req = wonder.Request()
-        req.cause_of_death(wonder.ICD10Code.A00)
-        req.dates(wonder.Dates.range(wonder.dates.Year(2010), wonder.dates.Year(2013)), wonder.Dates.single(wonder.dates.YearAndMonth(2015, 7)))
-        req.age_groups(wonder.Ages.single(27), wonder.Ages.range(50, 70))
+        req.cause_of_death(ICD10Code.A00)
+        req.dates(Dates.range(Year(2010), Year(2013)), Dates.single(YearAndMonth(2015, 7)))
+        req.age_groups(Ages.single(27), Ages.range(50, 70))
         req.send()
 
     def test1(self):
         req = wonder.Request()
-        req.group_by(wonder.Grouping.GENDER)
+        req.group_by(Grouping.GENDER)
         response = req.send()
         res2DList = response.as_2d_list()
 
@@ -46,8 +50,8 @@ class EndToEndTests(unittest.TestCase):
 
     def test2(self):
         req = wonder.Request()
-        req.group_by(wonder.Grouping.HISPANIC_ORIGIN)
-        req.weekday(wonder.Weekday.SUN, wonder.Weekday.MON, wonder.Weekday.TUE)
+        req.group_by(Grouping.HISPANIC_ORIGIN)
+        req.weekday(Weekday.SUN, Weekday.MON, Weekday.TUE)
         response = req.send()
         resDataFrame = response.as_dataframe()
 
