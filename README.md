@@ -1,8 +1,13 @@
 # CDCWonderPy
 
-### Project report
-The link the final project report is in the base directory of this repo
+A wrapper around the CDC Wonder API for the Compressed Mortality dataset meant to alleviate some of the many issues that the CDC's API has. For more information, see projectProposal and finalReport in the root directory.
 
+## Main feature highlights:
+* Request class initialized to default values. Users only need to specify parameters they wish to change.
+* Parameter and filter names renamed across the board. Users can now specify filters by their appropriate names (i.e. "race()" instead of V_D76.V8) and set their values with intuitive value enums (i.e. Race.WHITE instead of "2106-3").
+* Response formatting: Rather than having to parse the XML from the response, Request.send() returns an immutable Response object that has several formatting methods to see the results as 2D lists or a Pandas dataframe.
+
+See examples directory for more information on how to use the API.
 
 ### Running locally
 To install dependencies, run the following command at `src` root:
